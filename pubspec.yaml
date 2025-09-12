@@ -2,7 +2,7 @@ name: mapa_cultural_santaluzia
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -34,25 +34,25 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  
+
   # Google Fonts for typography (Poppins and Inter)
   google_fonts: ^6.2.1
-  
+
   # Animations and transitions
   flutter_animate: ^4.5.0
-  
+
   # State management
   flutter_bloc: ^8.1.4
-  
+
   # Dependency injection
   get_it: ^7.6.7
-  
+
   # Navigation
   go_router: ^13.2.0
-  
+
   # Form validation
   formz: ^0.6.1
-  
+
   # Phone number formatting
   mask_text_input_formatter: ^2.8.0
 
@@ -72,7 +72,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -83,28 +82,28 @@ flutter:
     - assets/images/
     - assets/icons/
 
-  # Google Fonts
-  fonts:
-    - family: Poppins
-      fonts:
-        - asset: fonts/Poppins-Regular.ttf
-          weight: 400
-        - asset: fonts/Poppins-Medium.ttf
-          weight: 500
-        - asset: fonts/Poppins-SemiBold.ttf
-          weight: 600
-        - asset: fonts/Poppins-Bold.ttf
-          weight: 700
-        - asset: fonts/Poppins-ExtraBold.ttf
-          weight: 800
-    - family: Inter
-      fonts:
-        - asset: fonts/Inter-Regular.ttf
-          weight: 400
-        - asset: fonts/Inter-Medium.ttf
-          weight: 500
-        - asset: fonts/Inter-SemiBold.ttf
-          weight: 600
+  # Google Fonts (comentado temporariamente até adicionar arquivos físicos em /fonts)
+  # fonts:
+  #   - family: Poppins
+  #     fonts:
+  #       - asset: fonts/Poppins-Regular.ttf
+  #         weight: 400
+  #       - asset: fonts/Poppins-Medium.ttf
+  #         weight: 500
+  #       - asset: fonts/Poppins-SemiBold.ttf
+  #         weight: 600
+  #       - asset: fonts/Poppins-Bold.ttf
+  #         weight: 700
+  #       - asset: fonts/Poppins-ExtraBold.ttf
+  #         weight: 800
+  #   - family: Inter
+  #     fonts:
+  #       - asset: fonts/Inter-Regular.ttf
+  #         weight: 400
+  #       - asset: fonts/Inter-Medium.ttf
+  #         weight: 500
+  #       - asset: fonts/Inter-SemiBold.ttf
+  #         weight: 600
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
