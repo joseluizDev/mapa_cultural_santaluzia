@@ -4,28 +4,28 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants/colors.dart';
 
 class AppTheme {
-  static ThemeData get temaClaro {
+  static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.azulCultural,
+        seedColor: AppColors.culturalBlue,
         brightness: Brightness.light,
-        primary: AppColors.azulCultural,
-        secondary: AppColors.vermelhoCultural,
+        primary: AppColors.culturalBlue,
+        secondary: AppColors.culturalRed,
       ),
       textTheme: _textoTema,
       appBarTheme: _appBarTema,
       elevatedButtonTheme: _botaoElevadoTema,
       cardTheme: CardThemeData(
-        color: AppColors.fundoCard,
+        color: AppColors.cardBackground,
         elevation: 0,
-        shadowColor: AppColors.sombraCard,
+        shadowColor: AppColors.cardShadow,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: AppColors.bordaCard, width: 1),
+          side: const BorderSide(color: AppColors.cardBorder, width: 1),
         ),
       ),
-      scaffoldBackgroundColor: AppColors.fundoClaro,
+      scaffoldBackgroundColor: AppColors.lightBackground,
     );
   }
 
@@ -34,77 +34,77 @@ class AppTheme {
       displayLarge: GoogleFonts.poppins(
         fontSize: 57,
         fontWeight: FontWeight.w700,
-        color: AppColors.textoPrimario,
+        color: AppColors.primaryText,
       ),
       displayMedium: GoogleFonts.poppins(
         fontSize: 45,
         fontWeight: FontWeight.w700,
-        color: AppColors.textoPrimario,
+        color: AppColors.primaryText,
       ),
       displaySmall: GoogleFonts.poppins(
         fontSize: 36,
         fontWeight: FontWeight.w600,
-        color: AppColors.textoPrimario,
+        color: AppColors.primaryText,
       ),
       headlineLarge: GoogleFonts.poppins(
         fontSize: 32,
         fontWeight: FontWeight.w600,
-        color: AppColors.textoPrimario,
+        color: AppColors.primaryText,
       ),
       headlineMedium: GoogleFonts.poppins(
         fontSize: 28,
         fontWeight: FontWeight.w600,
-        color: AppColors.textoPrimario,
+        color: AppColors.primaryText,
       ),
       headlineSmall: GoogleFonts.poppins(
         fontSize: 24,
         fontWeight: FontWeight.w600,
-        color: AppColors.textoPrimario,
+        color: AppColors.primaryText,
       ),
       titleLarge: GoogleFonts.poppins(
         fontSize: 22,
         fontWeight: FontWeight.w500,
-        color: AppColors.textoPrimario,
+        color: AppColors.primaryText,
       ),
       titleMedium: GoogleFonts.poppins(
         fontSize: 16,
         fontWeight: FontWeight.w500,
-        color: AppColors.textoPrimario,
+        color: AppColors.primaryText,
       ),
       titleSmall: GoogleFonts.poppins(
         fontSize: 14,
         fontWeight: FontWeight.w500,
-        color: AppColors.textoPrimario,
+        color: AppColors.primaryText,
       ),
       bodyLarge: GoogleFonts.inter(
         fontSize: 16,
         fontWeight: FontWeight.w400,
-        color: AppColors.textoPrimario,
+        color: AppColors.primaryText,
       ),
       bodyMedium: GoogleFonts.inter(
         fontSize: 14,
         fontWeight: FontWeight.w400,
-        color: AppColors.textoPrimario,
+        color: AppColors.primaryText,
       ),
       bodySmall: GoogleFonts.inter(
         fontSize: 12,
         fontWeight: FontWeight.w400,
-        color: AppColors.textoSecundario,
+        color: AppColors.secondaryText,
       ),
       labelLarge: GoogleFonts.inter(
         fontSize: 14,
         fontWeight: FontWeight.w500,
-        color: AppColors.textoPrimario,
+        color: AppColors.primaryText,
       ),
       labelMedium: GoogleFonts.inter(
         fontSize: 12,
         fontWeight: FontWeight.w500,
-        color: AppColors.textoPrimario,
+        color: AppColors.primaryText,
       ),
       labelSmall: GoogleFonts.inter(
         fontSize: 11,
         fontWeight: FontWeight.w500,
-        color: AppColors.textoSecundario,
+        color: AppColors.secondaryText,
       ),
     );
   }
@@ -117,17 +117,17 @@ class AppTheme {
       titleTextStyle: GoogleFonts.poppins(
         fontSize: 20,
         fontWeight: FontWeight.w600,
-        color: AppColors.textoBranco,
+        color: AppColors.whiteText,
       ),
-      iconTheme: const IconThemeData(color: AppColors.textoBranco),
+      iconTheme: const IconThemeData(color: AppColors.whiteText),
     );
   }
 
   static ElevatedButtonThemeData get _botaoElevadoTema {
     return ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.azulCultural,
-        foregroundColor: AppColors.textoBranco,
+        backgroundColor: AppColors.culturalBlue,
+        foregroundColor: AppColors.whiteText,
         textStyle: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

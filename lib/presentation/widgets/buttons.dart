@@ -4,57 +4,53 @@ import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
 
 class PrimaryButton extends StatelessWidget {
-  final String texto;
+  final String text;
   final VoidCallback? onPressed;
-  final bool carregando;
-  final IconData? icone;
+  final bool loading;
+  final IconData? icon;
 
   const PrimaryButton({
     super.key,
-    required this.texto,
+    required this.text,
     this.onPressed,
-    this.carregando = false,
-    this.icone,
+    this.loading = false,
+    this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: carregando ? null : onPressed,
+      onPressed: loading ? null : onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.azulCultural,
-        foregroundColor: AppColors.textoBranco,
+        backgroundColor: AppColors.culturalBlue,
+        foregroundColor: AppColors.whiteText,
         padding: const EdgeInsets.symmetric(
-          horizontal: AppDimensions.espacamentoGrande,
-          vertical: AppDimensions.espacamentoMedio,
+          horizontal: AppDimensions.largeSpacing,
+          vertical: AppDimensions.mediumSpacing,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(
-            AppDimensions.bordaArredondadaMedia,
-          ),
+          borderRadius: BorderRadius.circular(AppDimensions.mediumBorderRadius),
         ),
         elevation: 2,
       ),
-      child: carregando
+      child: loading
           ? const SizedBox(
               width: 16,
               height: 16,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  AppColors.textoBranco,
-                ),
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.whiteText),
               ),
             )
           : Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (icone != null) ...[
-                  Icon(icone, size: 18),
-                  const SizedBox(width: AppDimensions.espacamentoPequeno),
+                if (icon != null) ...[
+                  Icon(icon, size: 18),
+                  const SizedBox(width: AppDimensions.smallSpacing),
                 ],
                 Text(
-                  texto,
+                  text,
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -67,15 +63,15 @@ class PrimaryButton extends StatelessWidget {
 }
 
 class SecondaryButton extends StatelessWidget {
-  final String texto;
+  final String text;
   final VoidCallback? onPressed;
-  final IconData? icone;
+  final IconData? icon;
 
   const SecondaryButton({
     super.key,
-    required this.texto,
+    required this.text,
     this.onPressed,
-    this.icone,
+    this.icon,
   });
 
   @override
@@ -83,27 +79,25 @@ class SecondaryButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.azulCultural,
-        side: const BorderSide(color: AppColors.azulCultural),
+        foregroundColor: AppColors.culturalBlue,
+        side: const BorderSide(color: AppColors.culturalBlue),
         padding: const EdgeInsets.symmetric(
-          horizontal: AppDimensions.espacamentoGrande,
-          vertical: AppDimensions.espacamentoMedio,
+          horizontal: AppDimensions.largeSpacing,
+          vertical: AppDimensions.mediumSpacing,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(
-            AppDimensions.bordaArredondadaMedia,
-          ),
+          borderRadius: BorderRadius.circular(AppDimensions.mediumBorderRadius),
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (icone != null) ...[
-            Icon(icone, size: 18),
-            const SizedBox(width: AppDimensions.espacamentoPequeno),
+          if (icon != null) ...[
+            Icon(icon, size: 18),
+            const SizedBox(width: AppDimensions.smallSpacing),
           ],
           Text(
-            texto,
+            text,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
           ),
         ],

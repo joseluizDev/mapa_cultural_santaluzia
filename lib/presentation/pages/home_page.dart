@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.fundoClaro,
+      backgroundColor: AppColors.lightBackground,
       body: CustomScrollView(
         slivers: [
           _buildAppBar(context),
@@ -38,12 +38,12 @@ class HomePage extends StatelessWidget {
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
           decoration: const BoxDecoration(
-            gradient: AppColors.gradientePrimario,
+            gradient: AppColors.primaryGradient,
           ),
           child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppDimensions.espacamentoMedio,
+                horizontal: AppDimensions.mediumSpacing,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,18 +51,18 @@ class HomePage extends StatelessWidget {
                   Text(
                     'Famosos Locais',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: AppColors.textoBranco,
+                      color: AppColors.whiteText,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   Row(
                     children: [
-                      NavigationButton(texto: 'Início', ativo: true),
-                      NavigationButton(texto: 'Sobre'),
-                      NavigationButton(texto: 'Propagandas'),
-                      NavigationButton(texto: 'Entrar'),
-                      const SizedBox(width: AppDimensions.espacamentoMedio),
-                      PrimaryButton(texto: 'Criar conta', onPressed: () {}),
+                      NavigationButton(text: 'Início', active: true),
+                      NavigationButton(text: 'Sobre'),
+                      NavigationButton(text: 'Propagandas'),
+                      NavigationButton(text: 'Entrar'),
+                      const SizedBox(width: AppDimensions.mediumSpacing),
+                      PrimaryButton(text: 'Criar conta', onPressed: () {}),
                     ],
                   ),
                 ],
@@ -78,17 +78,17 @@ class HomePage extends StatelessWidget {
   Widget _buildHeroSection(BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
-        decoration: const BoxDecoration(gradient: AppColors.gradientePrimario),
+        decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
         child: Column(
           children: [
-            const SizedBox(height: AppDimensions.espacamentoExtraGrande),
+            const SizedBox(height: AppDimensions.extraLargeSpacing),
             Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppDimensions.espacamentoMedio,
+                horizontal: AppDimensions.mediumSpacing,
               ),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(
-                  maxWidth: AppDimensions.larguraMaximaConteudo,
+                  maxWidth: AppDimensions.maxContentWidth,
                 ),
                 child: Column(
                   children: [
@@ -96,23 +96,23 @@ class HomePage extends StatelessWidget {
                       'Descubra Famosos Incríveis na Sua Região',
                       style: Theme.of(context).textTheme.displayMedium
                           ?.copyWith(
-                            color: AppColors.textoBranco,
+                            color: AppColors.whiteText,
                             fontWeight: FontWeight.w700,
                             height: 1.2,
                           ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: AppDimensions.espacamentoGrande),
+                    const SizedBox(height: AppDimensions.largeSpacing),
                     Text(
                       'Conecte-se com famosos talentosos, artistas e\nempreendedores locais. Encontre o talento perfeito para seu\nprojeto ou negócio.',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppColors.textoBranco.withOpacity(0.9),
+                        color: AppColors.whiteText.withOpacity(0.9),
                         height: 1.5,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(
-                      height: AppDimensions.espacamentoExtraGrande,
+                      height: AppDimensions.extraLargeSpacing,
                     ),
                   ],
                 ),
@@ -133,7 +133,7 @@ class HomePage extends StatelessWidget {
 
     return SliverToBoxAdapter(
       child: Container(
-        decoration: const BoxDecoration(gradient: AppColors.gradientePrimario),
+        decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
         child: StatisticsSection(estatisticas: estatisticas),
       ),
     );
@@ -145,12 +145,12 @@ class HomePage extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppDimensions.espacamentoMedio,
-          vertical: AppDimensions.espacamentoGrande,
+          horizontal: AppDimensions.mediumSpacing,
+          vertical: AppDimensions.largeSpacing,
         ),
         child: ConstrainedBox(
           constraints: const BoxConstraints(
-            maxWidth: AppDimensions.larguraMaximaConteudo,
+            maxWidth: AppDimensions.maxContentWidth,
           ),
           child: AdvertisementCarousel(propagandas: propagandas),
         ),
@@ -162,31 +162,31 @@ class HomePage extends StatelessWidget {
     final talentos = _getMockTalents();
 
     return SliverPadding(
-      padding: const EdgeInsets.all(AppDimensions.espacamentoExtraGrande),
+      padding: const EdgeInsets.all(AppDimensions.extraLargeSpacing),
       sliver: SliverToBoxAdapter(
         child: ConstrainedBox(
           constraints: const BoxConstraints(
-            maxWidth: AppDimensions.larguraMaximaConteudo,
+            maxWidth: AppDimensions.maxContentWidth,
           ),
           child: Column(
             children: [
               Text(
                 'Famosos em Destaque',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: AppColors.textoPrimario,
+                  color: AppColors.primaryText,
                   fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppDimensions.espacamentoExtraGrande),
+              const SizedBox(height: AppDimensions.extraLargeSpacing),
               LayoutBuilder(
                 builder: (context, constraints) {
                   final largura = constraints.maxWidth;
                   int colunas = 1;
 
-                  if (largura > AppDimensions.breakpointDesktop) {
+                  if (largura > AppDimensions.desktopBreakpoint) {
                     colunas = 3;
-                  } else if (largura > AppDimensions.breakpointTablet) {
+                  } else if (largura > AppDimensions.tabletBreakpoint) {
                     colunas = 2;
                   }
 
@@ -195,8 +195,8 @@ class HomePage extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: colunas,
-                      crossAxisSpacing: AppDimensions.espacamentoGrande,
-                      mainAxisSpacing: AppDimensions.espacamentoGrande,
+                      crossAxisSpacing: AppDimensions.largeSpacing,
+                      mainAxisSpacing: AppDimensions.largeSpacing,
                       childAspectRatio: 1.4,
                     ),
                     itemCount: talentos.length,

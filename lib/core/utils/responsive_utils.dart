@@ -4,34 +4,34 @@ import '../constants/dimensions.dart';
 
 class ResponsiveUtils {
   static bool isMobile(BuildContext context) {
-    return MediaQuery.of(context).size.width < AppDimensions.breakpointMobile;
+    return MediaQuery.of(context).size.width < AppDimensions.mobileBreakpoint;
   }
 
   static bool isTablet(BuildContext context) {
-    final largura = MediaQuery.of(context).size.width;
-    return largura >= AppDimensions.breakpointMobile &&
-        largura < AppDimensions.breakpointDesktop;
+    final width = MediaQuery.of(context).size.width;
+    return width >= AppDimensions.mobileBreakpoint &&
+        width < AppDimensions.desktopBreakpoint;
   }
 
   static bool isDesktop(BuildContext context) {
-    return MediaQuery.of(context).size.width >= AppDimensions.breakpointDesktop;
+    return MediaQuery.of(context).size.width >= AppDimensions.desktopBreakpoint;
   }
 
-  static int obterNumeroColunasGrid(BuildContext context) {
+  static int getGridColumnCount(BuildContext context) {
     if (isDesktop(context)) return 3;
     if (isTablet(context)) return 2;
     return 1;
   }
 
-  static double obterPaddingHorizontal(BuildContext context) {
-    if (isMobile(context)) return AppDimensions.espacamentoMedio;
-    if (isTablet(context)) return AppDimensions.espacamentoGrande;
-    return AppDimensions.espacamentoExtraGrande;
+  static double getHorizontalPadding(BuildContext context) {
+    if (isMobile(context)) return AppDimensions.mediumSpacing;
+    if (isTablet(context)) return AppDimensions.largeSpacing;
+    return AppDimensions.extraLargeSpacing;
   }
 
-  static double obterEspacamentoEntreCards(BuildContext context) {
-    if (isMobile(context)) return AppDimensions.espacamentoMedio;
-    return AppDimensions.espacamentoGrande;
+  static double getCardSpacing(BuildContext context) {
+    if (isMobile(context)) return AppDimensions.mediumSpacing;
+    return AppDimensions.largeSpacing;
   }
 
   ResponsiveUtils._();

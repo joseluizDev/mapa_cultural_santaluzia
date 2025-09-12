@@ -16,19 +16,19 @@ class TalentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.fundoCardGlassmorphism,
+        color: AppColors.cardGlassmorphismBackground,
         borderRadius: BorderRadius.circular(
-          AppDimensions.bordaArredondadaMuitoGrande,
+          AppDimensions.veryLargeBorderRadius,
         ),
         border: Border.all(
-          color: AppColors.bordaCard.withOpacity(0.2),
+          color: AppColors.cardBorder.withOpacity(0.2),
           width: 1,
         ),
-        boxShadow: AppShadows.sombraCard,
+        boxShadow: AppShadows.cardShadow,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(
-          AppDimensions.bordaArredondadaMuitoGrande,
+          AppDimensions.veryLargeBorderRadius,
         ),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
@@ -38,8 +38,8 @@ class TalentCard extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  AppColors.creme.withOpacity(0.9),
-                  AppColors.creme.withOpacity(0.7),
+                  AppColors.cream.withOpacity(0.9),
+                  AppColors.cream.withOpacity(0.7),
                 ],
               ),
             ),
@@ -48,17 +48,17 @@ class TalentCard extends StatelessWidget {
               child: InkWell(
                 onTap: onTap,
                 borderRadius: BorderRadius.circular(
-                  AppDimensions.bordaArredondadaMuitoGrande,
+                  AppDimensions.veryLargeBorderRadius,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(AppDimensions.espacamentoMedio),
+                  padding: const EdgeInsets.all(AppDimensions.mediumSpacing),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildCabecalho(),
-                      const SizedBox(height: AppDimensions.espacamentoPequeno),
+                      const SizedBox(height: AppDimensions.smallSpacing),
                       _buildDescricao(context),
-                      const SizedBox(height: AppDimensions.espacamentoMedio),
+                      const SizedBox(height: AppDimensions.mediumSpacing),
                       _buildHabilidades(),
                     ],
                   ),
@@ -75,20 +75,20 @@ class TalentCard extends StatelessWidget {
     return Row(
       children: [
         CircleAvatar(
-          radius: AppDimensions.tamanhoAvatarCard / 2,
+          radius: AppDimensions.cardAvatarSize / 2,
           backgroundImage: talento.imagemUrl.isNotEmpty
               ? NetworkImage(talento.imagemUrl)
               : null,
-          backgroundColor: AppColors.cinzaClaro,
+          backgroundColor: AppColors.lightGray,
           child: talento.imagemUrl.isEmpty
               ? Icon(
                   Icons.person,
-                  size: AppDimensions.tamanhoAvatarCard * 0.6,
-                  color: AppColors.cinzaMedio,
+                  size: AppDimensions.cardAvatarSize * 0.6,
+                  color: AppColors.mediumGray,
                 )
               : null,
         ),
-        const SizedBox(width: AppDimensions.espacamentoMedio),
+        const SizedBox(width: AppDimensions.mediumSpacing),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,26 +98,26 @@ class TalentCard extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textoPrimario,
+                  color: AppColors.primaryText,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: AppDimensions.espacamentoMuitoPequeno),
+              const SizedBox(height: AppDimensions.verySmallSpacing),
               Row(
                 children: [
                   const Icon(
                     Icons.location_on,
                     size: 14,
-                    color: AppColors.textoSecundario,
+                    color: AppColors.secondaryText,
                   ),
-                  const SizedBox(width: AppDimensions.espacamentoMuitoPequeno),
+                  const SizedBox(width: AppDimensions.verySmallSpacing),
                   Expanded(
                     child: Text(
                       talento.localizacaoCompleta,
                       style: const TextStyle(
                         fontSize: 12,
-                        color: AppColors.textoSecundario,
+                        color: AppColors.secondaryText,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -136,7 +136,7 @@ class TalentCard extends StatelessWidget {
     return Text(
       talento.descricao,
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-        color: AppColors.textoPrimario,
+        color: AppColors.primaryText,
         height: 1.4,
       ),
       maxLines: 2,
@@ -146,21 +146,21 @@ class TalentCard extends StatelessWidget {
 
   Widget _buildHabilidades() {
     return Wrap(
-      spacing: AppDimensions.espacamentoPequeno,
-      runSpacing: AppDimensions.espacamentoMuitoPequeno,
+      spacing: AppDimensions.smallSpacing,
+      runSpacing: AppDimensions.verySmallSpacing,
       children: talento.habilidades.take(3).map((habilidade) {
         return Container(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppDimensions.espacamentoPequeno,
-            vertical: AppDimensions.espacamentoMuitoPequeno,
+            horizontal: AppDimensions.smallSpacing,
+            vertical: AppDimensions.verySmallSpacing,
           ),
           decoration: BoxDecoration(
-            color: AppColors.azulCultural.withOpacity(0.1),
+            color: AppColors.culturalBlue.withOpacity(0.1),
             borderRadius: BorderRadius.circular(
-              AppDimensions.bordaArredondadaPequena,
+              AppDimensions.smallBorderRadius,
             ),
             border: Border.all(
-              color: AppColors.azulCultural.withOpacity(0.3),
+              color: AppColors.culturalBlue.withOpacity(0.3),
               width: 0.5,
             ),
           ),
@@ -169,7 +169,7 @@ class TalentCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w500,
-              color: AppColors.azulCultural,
+              color: AppColors.culturalBlue,
             ),
           ),
         );

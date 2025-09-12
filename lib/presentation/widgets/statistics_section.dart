@@ -17,15 +17,15 @@ class StatisticWidget extends StatelessWidget {
         Text(
           estatistica.quantidadeFormatada,
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            color: AppColors.textoBranco,
+            color: AppColors.whiteText,
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: AppDimensions.espacamentoMuitoPequeno),
+        const SizedBox(height: AppDimensions.verySmallSpacing),
         Text(
           estatistica.rotulo.toUpperCase(),
           style: Theme.of(context).textTheme.labelMedium?.copyWith(
-            color: AppColors.textoBranco.withOpacity(0.9),
+            color: AppColors.whiteText.withOpacity(0.9),
             letterSpacing: 1.2,
             fontWeight: FontWeight.w500,
           ),
@@ -44,8 +44,8 @@ class StatisticsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-        vertical: AppDimensions.espacamentoExtraGrande,
-        horizontal: AppDimensions.espacamentoMedio,
+        vertical: AppDimensions.extraLargeSpacing,
+        horizontal: AppDimensions.mediumSpacing,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

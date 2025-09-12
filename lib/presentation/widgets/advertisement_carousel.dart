@@ -86,13 +86,9 @@ class _AdvertisementCarouselState extends State<AdvertisementCarousel> {
     return Container(
       width: double.infinity,
       height: 300,
-      margin: const EdgeInsets.symmetric(
-        vertical: AppDimensions.espacamentoGrande,
-      ),
+      margin: const EdgeInsets.symmetric(vertical: AppDimensions.largeSpacing),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          AppDimensions.bordaArredondadaGrande,
-        ),
+        borderRadius: BorderRadius.circular(AppDimensions.largeBorderRadius),
         boxShadow: const [
           BoxShadow(
             color: Color(0x1A000000),
@@ -103,9 +99,7 @@ class _AdvertisementCarouselState extends State<AdvertisementCarousel> {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(
-          AppDimensions.bordaArredondadaGrande,
-        ),
+        borderRadius: BorderRadius.circular(AppDimensions.largeBorderRadius),
         child: Stack(
           children: [
             // Slides

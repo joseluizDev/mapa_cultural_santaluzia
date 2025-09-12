@@ -18,12 +18,12 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(gradient: AppColors.gradientePrimario),
+      decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
       child: AppBar(
         title: Text(
           titulo,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: AppColors.textoBranco,
+            color: AppColors.whiteText,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -31,7 +31,7 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
         elevation: 0,
         automaticallyImplyLeading: mostrarVoltar,
         actions: acoes,
-        iconTheme: const IconThemeData(color: AppColors.textoBranco),
+        iconTheme: const IconThemeData(color: AppColors.whiteText),
       ),
     );
   }
@@ -41,15 +41,15 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class NavigationButton extends StatelessWidget {
-  final String texto;
+  final String text;
   final VoidCallback? onPressed;
-  final bool ativo;
+  final bool active;
 
   const NavigationButton({
     super.key,
-    required this.texto,
+    required this.text,
     this.onPressed,
-    this.ativo = false,
+    this.active = false,
   });
 
   @override
@@ -57,21 +57,21 @@ class NavigationButton extends StatelessWidget {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-        foregroundColor: ativo
-            ? AppColors.textoBranco
-            : AppColors.textoBranco.withOpacity(0.7),
+        foregroundColor: active
+            ? AppColors.whiteText
+            : AppColors.whiteText.withOpacity(0.7),
         padding: const EdgeInsets.symmetric(
-          horizontal: AppDimensions.espacamentoMedio,
-          vertical: AppDimensions.espacamentoPequeno,
+          horizontal: AppDimensions.mediumSpacing,
+          vertical: AppDimensions.smallSpacing,
         ),
       ),
       child: Text(
-        texto,
+        text,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: ativo
-              ? AppColors.textoBranco
-              : AppColors.textoBranco.withOpacity(0.7),
-          fontWeight: ativo ? FontWeight.w600 : FontWeight.w400,
+          color: active
+              ? AppColors.whiteText
+              : AppColors.whiteText.withOpacity(0.7),
+          fontWeight: active ? FontWeight.w600 : FontWeight.w400,
         ),
       ),
     );

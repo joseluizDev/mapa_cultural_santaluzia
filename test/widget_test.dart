@@ -6,7 +6,7 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mapa_cultural_santaluzia/main.dart';
+import 'package:mapa_cultural_santaluzia/app.dart';
 
 void main() {
   testWidgets('Exibe texto de boas vindas na página inicial', (tester) async {
