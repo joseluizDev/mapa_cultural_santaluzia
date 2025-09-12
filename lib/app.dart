@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mapa_cultural_santaluzia/presentation/pages/home_page.dart';
+import 'package:mapa_cultural_santaluzia/presentation/pages/login_page.dart';
 import 'package:mapa_cultural_santaluzia/presentation/themes/app_theme.dart';
 
 class MapaCulturalApp extends StatelessWidget {
@@ -10,7 +10,7 @@ class MapaCulturalApp extends StatelessWidget {
     return MaterialApp(
       title: 'Famosos Locais - Santa Luzia',
       theme: AppTheme.lightTheme,
-      home: const HomePage(),
+      home: const LoginPage(),
       debugShowCheckedModeBanner: false,
     );
   }
