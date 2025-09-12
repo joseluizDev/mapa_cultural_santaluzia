@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
@@ -37,9 +38,7 @@ class HomePage extends StatelessWidget {
       pinned: true,
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
-            gradient: AppColors.primaryGradient,
-          ),
+          decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
           child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(
@@ -58,11 +57,20 @@ class HomePage extends StatelessWidget {
                   Row(
                     children: [
                       NavigationButton(text: 'Início', active: true),
-                      NavigationButton(text: 'Sobre'),
+                      NavigationButton(
+                        text: 'Sobre',
+                        onPressed: () => GoRouter.of(context).go('/about'),
+                      ),
                       NavigationButton(text: 'Propagandas'),
-                      NavigationButton(text: 'Entrar'),
+                      NavigationButton(
+                        text: 'Entrar',
+                        onPressed: () => GoRouter.of(context).go('/login'),
+                      ),
                       const SizedBox(width: AppDimensions.mediumSpacing),
-                      PrimaryButton(text: 'Criar conta', onPressed: () {}),
+                      PrimaryButton(
+                        text: 'Criar conta',
+                        onPressed: () => GoRouter.of(context).go('/register'),
+                      ),
                     ],
                   ),
                 ],
@@ -111,9 +119,7 @@ class HomePage extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(
-                      height: AppDimensions.extraLargeSpacing,
-                    ),
+                    const SizedBox(height: AppDimensions.extraLargeSpacing),
                   ],
                 ),
               ),

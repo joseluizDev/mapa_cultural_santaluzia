@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:mapa_cultural_santaluzia/presentation/pages/about_page.dart';
 
 import '../presentation/pages/home_page.dart';
 import '../presentation/pages/login_page.dart';
@@ -14,6 +15,9 @@ class AppRoutes {
 
   /// Rota da página de registro
   static const String register = '/register';
+
+  /// Rota da página sobre
+  static const String about = '/about';
 
   /// Rota da página inicial (home)
   static const String home = '/home';
@@ -33,6 +37,9 @@ class AppRoutes {
         path: register,
         builder: (context, state) => const RegisterPage(),
       ),
+
+      // Rota da página sobre
+      GoRoute(path: about, builder: (context, state) => const AboutPage()),
 
       // Rota da página inicial (home)
       GoRoute(path: home, builder: (context, state) => const HomePage()),
