@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mapa_cultural_santaluzia/presentation/pages/login_page.dart';
+import 'package:mapa_cultural_santaluzia/core/routes.dart';
 import 'package:mapa_cultural_santaluzia/presentation/themes/app_theme.dart';
 
 class MapaCulturalApp extends StatelessWidget {
@@ -7,10 +7,10 @@ class MapaCulturalApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Famosos Locais - Santa Luzia',
       theme: AppTheme.lightTheme,
-      home: const LoginPage(),
+      routerConfig: AppRoutes.router,
       debugShowCheckedModeBanner: false,
     );
   }

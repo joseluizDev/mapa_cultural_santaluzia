@@ -1,12 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
-import 'home_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -670,7 +670,7 @@ class _RegisterPageState extends State<RegisterPage>
         ),
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); // Volta para a tela de login
+            context.go('/login'); // Volta para a tela de login
           },
           style: TextButton.styleFrom(
             padding: EdgeInsets.zero,
@@ -717,9 +717,7 @@ class _RegisterPageState extends State<RegisterPage>
           );
 
           // Navigate to home
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const HomePage()),
-          );
+          context.go('/home');
         }
       });
     }

@@ -1,12 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
-import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -543,9 +543,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         ),
         TextButton(
           onPressed: () {
-            Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (_) => const RegisterPage()));
+            context.go('/register');
           },
           style: TextButton.styleFrom(
             padding: EdgeInsets.zero,
@@ -585,9 +583,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           );
 
           // Navigate to home
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const RegisterPage()),
-          );
+          context.go('/home');
         }
       });
     }
