@@ -56,6 +56,9 @@ dependencies:
   # Phone number formatting
   mask_text_input_formatter: ^2.8.0
 
+  # URL launcher for external links
+  url_launcher: ^6.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

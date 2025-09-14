@@ -5,10 +5,9 @@ import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
 import '../../domain/entities/advertisement.dart';
 import '../../domain/entities/statistic.dart';
-import '../../domain/entities/talent.dart';
+import '../../mock/talents_mock.dart';
 import '../widgets/advertisement_carousel.dart';
-import '../widgets/buttons.dart';
-import '../widgets/gradient_app_bar.dart';
+import '../widgets/custom_scaffold.dart';
 import '../widgets/statistics_section.dart';
 import '../widgets/talent_card.dart';
 
@@ -17,69 +16,16 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+    return CustomScaffold(
+      currentPage: AppPage.home,
       body: CustomScrollView(
         slivers: [
-          _buildAppBar(context),
           _buildHeroSection(context),
           _buildStatisticsSection(),
           _buildAdvertisementCarousel(),
           _buildTalentsSection(context),
         ],
       ),
-    );
-  }
-
-  Widget _buildAppBar(BuildContext context) {
-    return SliverAppBar(
-      expandedHeight: 80,
-      floating: false,
-      pinned: true,
-      flexibleSpace: FlexibleSpaceBar(
-        background: Container(
-          decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppDimensions.mediumSpacing,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Famosos Locais',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: AppColors.whiteText,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      NavigationButton(text: 'Início', active: true),
-                      NavigationButton(
-                        text: 'Sobre',
-                        onPressed: () => GoRouter.of(context).go('/about'),
-                      ),
-                      NavigationButton(text: 'Propagandas'),
-                      NavigationButton(
-                        text: 'Entrar',
-                        onPressed: () => GoRouter.of(context).go('/login'),
-                      ),
-                      const SizedBox(width: AppDimensions.mediumSpacing),
-                      PrimaryButton(
-                        text: 'Criar conta',
-                        onPressed: () => GoRouter.of(context).go('/register'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-      backgroundColor: Colors.transparent,
     );
   }
 
@@ -165,7 +111,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildTalentsSection(BuildContext context) {
-    final talentos = _getMockTalents();
+    final talentos = getMockTalents();
 
     return SliverPadding(
       padding: const EdgeInsets.all(AppDimensions.extraLargeSpacing),
@@ -203,14 +149,18 @@ class HomePage extends StatelessWidget {
                       crossAxisCount: colunas,
                       crossAxisSpacing: AppDimensions.largeSpacing,
                       mainAxisSpacing: AppDimensions.largeSpacing,
-                      childAspectRatio: 1.4,
+                      // Aumentado para deixar os cards mais baixos
+                      childAspectRatio: 1.8,
                     ),
                     itemCount: talentos.length,
                     itemBuilder: (context, index) {
                       return TalentCard(
                         talento: talentos[index],
                         onTap: () {
-                          // Implementar navegação para detalhes do talento
+                          GoRouter.of(context).goNamed(
+                            'talent_detail',
+                            pathParameters: {'name': talentos[index].nome},
+                          );
                         },
                       );
                     },
@@ -222,76 +172,6 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  List<Talent> _getMockTalents() {
-    return [
-      const Talent(
-        nome: 'Lucas Mendes',
-        cidade: 'Curitiba',
-        estado: 'PR',
-        descricao: 'Consultor financeiro com experiência em investimentos e...',
-        imagemUrl:
-            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-        habilidades: [
-          'Consultoria Financeira',
-          'Investimentos',
-          'Análise de Risco',
-          'Planejamento',
-        ],
-      ),
-      const Talent(
-        nome: 'Patricia Costa',
-        cidade: 'Salvador',
-        estado: 'BA',
-        descricao: 'Tradutora e intérprete com fluência em 5 idiomas...',
-        imagemUrl:
-            'https://images.unsplash.com/photo-1494790108755-2616b612b6c8?w=150&h=150&fit=crop&crop=face',
-        habilidades: ['Tradução', 'Inglês', 'Espanhol', 'Francês', 'Alemão'],
-      ),
-      const Talent(
-        nome: 'Ana Silva',
-        cidade: 'São Paulo',
-        estado: 'SP',
-        descricao:
-            'Designer gráfica com 5 anos de experiência em branding e...',
-        imagemUrl:
-            'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-        habilidades: [
-          'Design Gráfico',
-          'Branding',
-          'Adobe Creative Suite',
-          'UI/UX',
-        ],
-      ),
-      const Talent(
-        nome: 'Roberto Alves',
-        cidade: 'Porto Alegre',
-        estado: 'RS',
-        descricao: 'Fotógrafo profissional especializado em eventos e...',
-        imagemUrl:
-            'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-        habilidades: ['Fotografia', 'Edição de Imagem', 'Google Ads'],
-      ),
-      const Talent(
-        nome: 'Fernanda Lima',
-        cidade: 'Belo Horizonte',
-        estado: 'MG',
-        descricao: 'Especialista em Marketing Digital e SEO com foco em...',
-        imagemUrl:
-            'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
-        habilidades: ['Marketing Digital', 'SEO'],
-      ),
-      const Talent(
-        nome: 'Carlos Santos',
-        cidade: 'Rio de Janeiro',
-        estado: 'RJ',
-        descricao: 'Desenvolvedor Full Stack especializado em React e...',
-        imagemUrl:
-            'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
-        habilidades: ['React', 'Node.js', 'TypeScript', 'MongoDB'],
-      ),
-    ];
   }
 
   List<Advertisement> _getMockAdvertisements() {

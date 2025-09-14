@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../../core/constants/colors.dart';
-import '../../core/constants/dimensions.dart';
-import '../widgets/buttons.dart';
-import '../widgets/gradient_app_bar.dart';
+import 'package:mapa_cultural_santaluzia/presentation/widgets/custom_scaffold.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
@@ -94,77 +90,20 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.lightBackground,
-      body: CustomScrollView(
-        slivers: [
-          _buildAppBar(context),
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                _buildHeroSection(),
-                _buildMissionCard(),
-                _buildValuesSection(),
-                _buildImpactSection(),
-                _buildHowItWorksSection(),
-                _buildCallToActionSection(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAppBar(BuildContext context) {
-    return SliverAppBar(
-      expandedHeight: 80,
-      floating: false,
-      pinned: true,
-      flexibleSpace: FlexibleSpaceBar(
-        background: Container(
-          decoration: BoxDecoration(gradient: AppColors.primaryGradient),
-          child: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppDimensions.mediumSpacing,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Famosos Locais',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: AppColors.whiteText,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      NavigationButton(
-                        text: 'Início',
-                        onPressed: () => GoRouter.of(context).go('/home'),
-                      ),
-                      NavigationButton(text: 'Sobre', active: true),
-                      NavigationButton(text: 'Propagandas'),
-                      NavigationButton(
-                        text: 'Entrar',
-                        onPressed: () => GoRouter.of(context).go('/login'),
-                      ),
-                      SizedBox(width: AppDimensions.mediumSpacing),
-                      PrimaryButton(
-                        text: 'Criar conta',
-                        onPressed: () => GoRouter.of(context).go('/register'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
+    return CustomScaffold(
+      currentPage: AppPage.about,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildHeroSection(),
+            _buildMissionCard(),
+            _buildValuesSection(),
+            _buildImpactSection(),
+            _buildHowItWorksSection(),
+            _buildCallToActionSection(),
+          ],
         ),
       ),
-      backgroundColor: Colors.transparent,
     );
   }
 

@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:mapa_cultural_santaluzia/presentation/pages/about_page.dart';
+import 'package:mapa_cultural_santaluzia/presentation/pages/advertisement_page.dart';
+import 'package:mapa_cultural_santaluzia/presentation/pages/talent_detail_page.dart';
 
 import '../presentation/pages/home_page.dart';
 import '../presentation/pages/login_page.dart';
@@ -22,6 +24,9 @@ class AppRoutes {
   /// Rota da página inicial (home)
   static const String home = '/home';
 
+  /// Rota da página de propagandas
+  static const String ads = '/ads';
+
   /// Configuração do GoRouter com todas as rotas definidas
   static final GoRouter router = GoRouter(
     initialLocation: initial,
@@ -43,6 +48,28 @@ class AppRoutes {
 
       // Rota da página inicial (home)
       GoRoute(path: home, builder: (context, state) => const HomePage()),
+
+      // Rota da página de propagandas
+      GoRoute(
+        path: ads,
+        builder: (context, state) => const AdvertisementPage(),
+      ),
+
+      // Rota de detalhes de talento (usa nome como identificador simplificado)
+      GoRoute(
+        name: 'talent_detail',
+        path: '/talent/:name',
+        builder: (context, state) {
+          final nome = state.pathParameters['name'] ?? '';
+          return TalentDetailPage(nomeTalento: nome);
+        },
+      ),
+
+      // Rota da página de anúncios
+      GoRoute(
+        path: '/ads',
+        builder: (context, state) => const AdvertisementPage(),
+      ),
     ],
   );
 }

@@ -8,6 +8,8 @@ class PrimaryButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool loading;
   final IconData? icon;
+  final Color? backgroundColor;
+  final Color? textColor;
 
   const PrimaryButton({
     super.key,
@@ -15,6 +17,8 @@ class PrimaryButton extends StatelessWidget {
     this.onPressed,
     this.loading = false,
     this.icon,
+    this.backgroundColor,
+    this.textColor,
   });
 
   @override
@@ -22,8 +26,8 @@ class PrimaryButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: loading ? null : onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.culturalBlue,
-        foregroundColor: AppColors.whiteText,
+        backgroundColor: backgroundColor ?? AppColors.culturalBlue,
+        foregroundColor: textColor ?? AppColors.whiteText,
         padding: const EdgeInsets.symmetric(
           horizontal: AppDimensions.largeSpacing,
           vertical: AppDimensions.mediumSpacing,
@@ -51,9 +55,10 @@ class PrimaryButton extends StatelessWidget {
                 ],
                 Text(
                   text,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
+                    color: textColor,
                   ),
                 ),
               ],
@@ -101,6 +106,42 @@ class SecondaryButton extends StatelessWidget {
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class NavigationButton extends StatelessWidget {
+  final String text;
+  final VoidCallback? onPressed;
+  final bool active;
+
+  const NavigationButton({
+    super.key,
+    required this.text,
+    this.onPressed,
+    this.active = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+        foregroundColor: active
+            ? AppColors.whiteText
+            : AppColors.whiteText.withOpacity(0.7),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppDimensions.mediumSpacing,
+          vertical: AppDimensions.smallSpacing,
+        ),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+        ),
       ),
     );
   }

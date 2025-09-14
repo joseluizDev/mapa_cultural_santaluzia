@@ -51,14 +51,15 @@ class TalentCard extends StatelessWidget {
                   AppDimensions.veryLargeBorderRadius,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(AppDimensions.mediumSpacing),
+                  // Redução de padding para diminuir altura total do card
+                  padding: const EdgeInsets.all(AppDimensions.smallSpacing),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildCabecalho(),
-                      const SizedBox(height: AppDimensions.smallSpacing),
+                      const SizedBox(height: AppDimensions.verySmallSpacing),
                       _buildDescricao(context),
-                      const SizedBox(height: AppDimensions.mediumSpacing),
+                      const SizedBox(height: AppDimensions.smallSpacing),
                       _buildHabilidades(),
                     ],
                   ),
@@ -75,7 +76,8 @@ class TalentCard extends StatelessWidget {
     return Row(
       children: [
         CircleAvatar(
-          radius: AppDimensions.cardAvatarSize / 2,
+          // Avatar ligeiramente menor para reduzir altura
+          radius: (AppDimensions.cardAvatarSize * 0.8) / 2,
           backgroundImage: talento.imagemUrl.isNotEmpty
               ? NetworkImage(talento.imagemUrl)
               : null,
@@ -83,7 +85,7 @@ class TalentCard extends StatelessWidget {
           child: talento.imagemUrl.isEmpty
               ? Icon(
                   Icons.person,
-                  size: AppDimensions.cardAvatarSize * 0.6,
+                  size: AppDimensions.cardAvatarSize * 0.48,
                   color: AppColors.mediumGray,
                 )
               : null,
@@ -139,7 +141,8 @@ class TalentCard extends StatelessWidget {
         color: AppColors.primaryText,
         height: 1.4,
       ),
-      maxLines: 2,
+      // Menos linhas para reduzir altura
+      maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );
   }
