@@ -8,6 +8,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
+import '../stores/complete_profile_store.dart';
 
 class CompleteProfilePage extends StatefulWidget {
   final String contact;
@@ -42,45 +43,13 @@ class _CompleteProfilePageState extends State<CompleteProfilePage>
     filter: {"#": RegExp(r'[0-9]')},
   );
 
-  bool _isLoading = false;
-  String? _errorMessage;
-
-  // Lista de atividades/talentos disponíveis
-  final List<String> _availableActivities = [
-    'Música',
-    'Dança',
-    'Teatro',
-    'Pintura',
-    'Escultura',
-    'Fotografia',
-    'Culinária',
-    'Artesanato',
-    'Literatura',
-    'Poesia',
-    'Stand-up',
-    'Magia/Ilusionismo',
-    'Capoeira',
-    'Artes Marciais',
-    'Yoga',
-    'Massoterapia',
-    'Tatuagem',
-    'Design Gráfico',
-    'Moda',
-    'Barbeiro/Cabeleireiro',
-    'Jardinagem',
-    'Marcenaria',
-    'Eletrônica',
-    'Programação',
-    'Educação',
-    'Consultoria',
-    'Outros',
-  ];
-
-  final List<String> _selectedActivities = [];
+  // Replace direct state variables with store
+  late final CompleteProfileStore _store;
 
   @override
   void initState() {
     super.initState();
+    _store = CompleteProfileStore();
     _setupAnimations();
   }
 
@@ -117,6 +86,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage>
     _floatController1.dispose();
     _floatController2.dispose();
     _floatController3.dispose();
+    _store.dispose();
     super.dispose();
   }
 
@@ -322,7 +292,15 @@ class _CompleteProfilePageState extends State<CompleteProfilePage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (_errorMessage != null) _buildErrorMessage(),
+          ValueListenableBuilder<String?>(
+            valueListenable: _store.errorMessage,
+            builder: (context, errorMessage, child) {
+              if (errorMessage != null) {
+                return _buildErrorMessage(errorMessage);
+              }
+              return const SizedBox.shrink();
+            },
+          ),
           _buildNameField(),
           const SizedBox(height: 16),
           _buildCpfField(),
@@ -339,7 +317,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage>
     );
   }
 
-  Widget _buildErrorMessage() {
+  Widget _buildErrorMessage(String errorMessage) {
     return Container(
       padding: const EdgeInsets.all(12),
       margin: const EdgeInsets.only(bottom: 16),
@@ -354,7 +332,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage>
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              _errorMessage!,
+              errorMessage,
               style: const TextStyle(color: Color(0xFFdc2626), fontSize: 14),
             ),
           ),
@@ -521,59 +499,63 @@ class _CompleteProfilePageState extends State<CompleteProfilePage>
           ),
         ),
         const SizedBox(height: 12),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: _availableActivities.map((activity) {
-            final isSelected = _selectedActivities.contains(activity);
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  if (isSelected) {
-                    _selectedActivities.remove(activity);
-                  } else {
-                    _selectedActivities.add(activity);
-                  }
-                });
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
+        ValueListenableBuilder<List<String>>(
+          valueListenable: _store.selectedActivities,
+          builder: (context, selectedActivities, child) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: _store.availableActivities.map((activity) {
+                    final isSelected = _store.isActivitySelected(activity);
+                    return GestureDetector(
+                      onTap: () {
+                        _store.toggleActivity(activity);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? const Color(0xFF3b82f6)
+                              : const Color(0xFFf3f4f6),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: isSelected
+                                ? const Color(0xFF3b82f6)
+                                : const Color(0xFFd1d5db),
+                          ),
+                        ),
+                        child: Text(
+                          activity,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isSelected ? Colors.white : const Color(0xFF374151),
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? const Color(0xFF3b82f6)
-                      : const Color(0xFFf3f4f6),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: isSelected
-                        ? const Color(0xFF3b82f6)
-                        : const Color(0xFFd1d5db),
+                if (selectedActivities.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      'Selecione pelo menos uma atividade',
+                      style: TextStyle(fontSize: 12, color: Colors.red[600]),
+                    ),
                   ),
-                ),
-                child: Text(
-                  activity,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isSelected ? Colors.white : const Color(0xFF374151),
-                    fontWeight: isSelected
-                        ? FontWeight.w600
-                        : FontWeight.normal,
-                  ),
-                ),
-              ),
+              ],
             );
-          }).toList(),
+          },
         ),
-        if (_selectedActivities.isEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text(
-              'Selecione pelo menos uma atividade',
-              style: TextStyle(fontSize: 12, color: Colors.red[600]),
-            ),
-          ),
       ],
     );
   }
@@ -614,86 +596,67 @@ class _CompleteProfilePageState extends State<CompleteProfilePage>
   }
 
   Widget _buildCompleteProfileButton() {
-    return Container(
-      width: double.infinity,
-      height: 56,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF3b82f6), Color(0xFF1d4ed8)],
-        ),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF3b82f6).withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ElevatedButton(
-        onPressed: _isLoading ? null : _completeProfile,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
+    return ValueListenableBuilder<bool>(
+      valueListenable: _store.isLoading,
+      builder: (context, isLoading, child) {
+        return Container(
+          width: double.infinity,
+          height: 56,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF3b82f6), Color(0xFF1d4ed8)],
+            ),
             borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF3b82f6).withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _isLoading ? 'Finalizando...' : 'Finalizar Cadastro',
-              style: GoogleFonts.inter(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+          child: ElevatedButton(
+            onPressed: isLoading ? null : _completeProfile,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
-            if (!_isLoading) ...[
-              const SizedBox(width: 8),
-              const Text('🎉', style: TextStyle(fontSize: 16)),
-            ],
-          ],
-        ),
-      ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  isLoading ? 'Finalizando...' : 'Finalizar Cadastro',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                if (!isLoading) ...[
+                  const SizedBox(width: 8),
+                  const Text('🎉', style: TextStyle(fontSize: 16)),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
-  void _completeProfile() {
+  void _completeProfile() async {
     if (_formKey.currentState?.validate() ?? false) {
-      if (_selectedActivities.isEmpty) {
-        setState(() {
-          _errorMessage = 'Por favor, selecione pelo menos uma atividade';
-        });
-        return;
-      }
-
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
-
-      // Simular salvamento do perfil
-      Future.delayed(const Duration(seconds: 3), () {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-
-          // Mostrar sucesso
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Perfil criado com sucesso! Bem-vindo(a)! 🎉'),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 3),
-            ),
-          );
-
-          // Navegar para home
-          context.go('/home');
-        }
-      });
+      await _store.completeProfile(
+        name: _nameController.text,
+        cpf: _cpfController.text,
+        age: _ageController.text,
+        city: _cityController.text,
+        description: _descriptionController.text,
+        context: context,
+      );
     }
   }
 }
