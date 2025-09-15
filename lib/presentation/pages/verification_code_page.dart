@@ -9,14 +9,18 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
 
+typedef VerifyCodeCallback = void Function(String code);
+
 class VerificationCodePage extends StatefulWidget {
   final String contact;
   final String contactType; // 'email' ou 'phone'
+  final VerifyCodeCallback? onVerify;
 
   const VerificationCodePage({
     super.key,
     required this.contact,
     required this.contactType,
+    this.onVerify,
   });
 
   @override
@@ -549,6 +553,13 @@ class _VerificationCodePageState extends State<VerificationCodePage>
       _errorMessage = null;
     });
 
+    // If callback is provided, use it
+    if (widget.onVerify != null) {
+      widget.onVerify!(code);
+      return;
+    }
+
+    // Otherwise, use the default implementation
     // Simular verificação do código
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {

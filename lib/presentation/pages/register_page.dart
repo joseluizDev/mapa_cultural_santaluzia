@@ -9,8 +9,12 @@ import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
 import '../../core/services/verification_service.dart';
 
+typedef RegisterCallback = void Function(String contact, String contactType);
+
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+  final RegisterCallback? onRegister;
+
+  const RegisterPage({super.key, this.onRegister});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -768,6 +772,13 @@ class _RegisterPageState extends State<RegisterPage>
             : _phoneController.text;
         String contactType = _isEmailSelected ? 'email' : 'phone';
 
+        // If callback is provided, use it
+        if (widget.onRegister != null) {
+          widget.onRegister!(contact, contactType);
+          return;
+        }
+
+        // Otherwise, use the default implementation
         // Simula o envio do código de verificação
         bool success;
         if (_isEmailSelected) {

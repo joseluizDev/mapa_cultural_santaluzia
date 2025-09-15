@@ -9,14 +9,26 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
 
+typedef CompleteProfileCallback =
+    void Function({
+      required String name,
+      required String cpf,
+      required String age,
+      required String city,
+      required String description,
+      required List<String> activities,
+    });
+
 class CompleteProfilePage extends StatefulWidget {
   final String contact;
   final String contactType;
+  final CompleteProfileCallback? onCompleteProfile;
 
   const CompleteProfilePage({
     super.key,
     required this.contact,
     required this.contactType,
+    this.onCompleteProfile,
   });
 
   @override
@@ -674,6 +686,20 @@ class _CompleteProfilePageState extends State<CompleteProfilePage>
         _errorMessage = null;
       });
 
+      // If callback is provided, use it
+      if (widget.onCompleteProfile != null) {
+        widget.onCompleteProfile!(
+          name: _nameController.text,
+          cpf: _cpfController.text,
+          age: _ageController.text,
+          city: _cityController.text,
+          description: _descriptionController.text,
+          activities: List<String>.from(_selectedActivities),
+        );
+        return;
+      }
+
+      // Otherwise, use the default implementation
       // Simular salvamento do perfil
       Future.delayed(const Duration(seconds: 3), () {
         if (mounted) {

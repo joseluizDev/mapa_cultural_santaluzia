@@ -8,8 +8,12 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
 
+typedef LoginCallback = void Function(String email, String password);
+
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final LoginCallback? onLogin;
+
+  const LoginPage({super.key, this.onLogin});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -480,6 +484,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         _errorMessage = null;
       });
 
+      // If callback is provided, use it
+      if (widget.onLogin != null) {
+        widget.onLogin!(_phoneController.text, _passwordController.text);
+        return;
+      }
+
+      // Otherwise, use the default implementation
       // Simulate login process
       Future.delayed(const Duration(seconds: 2), () {
         if (mounted) {
