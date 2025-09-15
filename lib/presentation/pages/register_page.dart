@@ -7,7 +7,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
-import '../../core/services/verification_service.dart';
+import '../stores/register_store.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -34,14 +34,13 @@ class _RegisterPageState extends State<RegisterPage>
     filter: {"#": RegExp(r'[0-9]')},
   );
 
-  bool _isLoading = false;
-  bool _acceptTerms = false;
-  bool _isEmailSelected = true; // Controla se email ou telefone foi selecionado
-  String? _errorMessage;
+  // Replace direct state variables with store
+  late final RegisterStore _store;
 
   @override
   void initState() {
     super.initState();
+    _store = RegisterStore();
     _setupAnimations();
   }
 
@@ -77,6 +76,7 @@ class _RegisterPageState extends State<RegisterPage>
     _floatController1.dispose();
     _floatController2.dispose();
     _floatController3.dispose();
+    _store.dispose();
     super.dispose();
   }
 
@@ -293,10 +293,23 @@ class _RegisterPageState extends State<RegisterPage>
       key: _formKey,
       child: Column(
         children: [
-          if (_errorMessage != null) _buildErrorMessage(),
+          ValueListenableBuilder<String?>(
+            valueListenable: _store.errorMessage,
+            builder: (context, errorMessage, child) {
+              if (errorMessage != null) {
+                return _buildErrorMessage(errorMessage);
+              }
+              return const SizedBox.shrink();
+            },
+          ),
           _buildContactMethodSelector(),
           const SizedBox(height: 16), // 1rem
-          if (_isEmailSelected) _buildEmailField() else _buildPhoneField(),
+          ValueListenableBuilder<bool>(
+            valueListenable: _store.isEmailSelected,
+            builder: (context, isEmailSelected, child) {
+              return isEmailSelected ? _buildEmailField() : _buildPhoneField();
+            },
+          ),
           const SizedBox(height: 16), // 1rem
           _buildPasswordField(),
           const SizedBox(height: 16), // 1rem
@@ -306,7 +319,7 @@ class _RegisterPageState extends State<RegisterPage>
     );
   }
 
-  Widget _buildErrorMessage() {
+  Widget _buildErrorMessage(String errorMessage) {
     return Container(
       padding: const EdgeInsets.all(12), // 0.75rem
       margin: const EdgeInsets.only(bottom: 16), // 1rem
@@ -321,7 +334,7 @@ class _RegisterPageState extends State<RegisterPage>
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              _errorMessage!,
+              errorMessage,
               style: const TextStyle(
                 color: Color(0xFFdc2626),
                 fontSize: 14, // 0.875rem
@@ -334,113 +347,114 @@ class _RegisterPageState extends State<RegisterPage>
   }
 
   Widget _buildContactMethodSelector() {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFFf9fafb),
-        border: Border.all(color: const Color(0xFFe5e7eb), width: 2),
-        borderRadius: BorderRadius.circular(12), // 0.75rem
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  _isEmailSelected = true;
-                  _phoneController.clear();
-                });
-              },
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: _isEmailSelected
-                      ? const Color(0xFF3b82f6)
-                      : Colors.transparent,
+    return ValueListenableBuilder<bool>(
+      valueListenable: _store.isEmailSelected,
+      builder: (context, isEmailSelected, child) {
+        return Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFFf9fafb),
+            border: Border.all(color: const Color(0xFFe5e7eb), width: 2),
+            borderRadius: BorderRadius.circular(12), // 0.75rem
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    _store.setEmailSelected();
+                    _phoneController.clear();
+                  },
                   borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '✉️',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: _isEmailSelected
-                            ? Colors.white
-                            : const Color(0xFF6b7280),
-                      ),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                      horizontal: 12,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Email',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: _isEmailSelected
-                            ? Colors.white
-                            : const Color(0xFF6b7280),
-                      ),
+                    decoration: BoxDecoration(
+                      color: isEmailSelected
+                          ? const Color(0xFF3b82f6)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '✉️',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: isEmailSelected
+                                ? Colors.white
+                                : const Color(0xFF6b7280),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Email',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: isEmailSelected
+                                ? Colors.white
+                                : const Color(0xFF6b7280),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(width: 2),
-          Expanded(
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  _isEmailSelected = false;
-                  _emailController.clear();
-                });
-              },
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: !_isEmailSelected
-                      ? const Color(0xFF3b82f6)
-                      : Colors.transparent,
+              const SizedBox(width: 2),
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    _store.setPhoneSelected();
+                    _emailController.clear();
+                  },
                   borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '📱',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: !_isEmailSelected
-                            ? Colors.white
-                            : const Color(0xFF6b7280),
-                      ),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                      horizontal: 12,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Telefone',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: !_isEmailSelected
-                            ? Colors.white
-                            : const Color(0xFF6b7280),
-                      ),
+                    decoration: BoxDecoration(
+                      color: !isEmailSelected
+                          ? const Color(0xFF3b82f6)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '📱',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: !isEmailSelected
+                                ? Colors.white
+                                : const Color(0xFF6b7280),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Telefone',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: !isEmailSelected
+                                ? Colors.white
+                                : const Color(0xFF6b7280),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -598,93 +612,101 @@ class _RegisterPageState extends State<RegisterPage>
   }
 
   Widget _buildTermsCheckbox() {
-    return Row(
-      children: [
-        Checkbox(
-          value: _acceptTerms,
-          onChanged: (value) {
-            setState(() {
-              _acceptTerms = value ?? false;
-            });
-          },
-          activeColor: AppColors.culturalBlue,
-        ),
-        Expanded(
-          child: RichText(
-            text: TextSpan(
-              style: GoogleFonts.inter(
-                fontSize: 14, // 0.875rem
-                color: const Color(0xFF6b7280),
-              ),
-              children: [
-                const TextSpan(text: 'Aceito os '),
-                TextSpan(
-                  text: 'Termos de Uso',
-                  style: const TextStyle(
-                    color: Color(0xFF3b82f6),
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-                const TextSpan(text: ' e '),
-                TextSpan(
-                  text: 'Política de Privacidade',
-                  style: const TextStyle(
-                    color: Color(0xFF3b82f6),
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ],
+    return ValueListenableBuilder<bool>(
+      valueListenable: _store.acceptTerms,
+      builder: (context, acceptTerms, child) {
+        return Row(
+          children: [
+            Checkbox(
+              value: acceptTerms,
+              onChanged: (value) {
+                _store.toggleTermsAcceptance();
+              },
+              activeColor: AppColors.culturalBlue,
             ),
-          ),
-        ),
-      ],
+            Expanded(
+              child: RichText(
+                text: TextSpan(
+                  style: GoogleFonts.inter(
+                    fontSize: 14, // 0.875rem
+                    color: const Color(0xFF6b7280),
+                  ),
+                  children: [
+                    const TextSpan(text: 'Aceito os '),
+                    TextSpan(
+                      text: 'Termos de Uso',
+                      style: const TextStyle(
+                        color: Color(0xFF3b82f6),
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                    const TextSpan(text: ' e '),
+                    TextSpan(
+                      text: 'Política de Privacidade',
+                      style: const TextStyle(
+                        color: Color(0xFF3b82f6),
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
   Widget _buildRegisterButton() {
-    return Container(
-      width: double.infinity,
-      height: 56, // 3.5rem
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF3b82f6), Color(0xFF1d4ed8)],
-        ),
-        borderRadius: BorderRadius.circular(12), // 0.75rem
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF3b82f6).withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ElevatedButton(
-        onPressed: _isLoading ? null : _register,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
+    return ValueListenableBuilder<bool>(
+      valueListenable: _store.isLoading,
+      builder: (context, isLoading, child) {
+        return Container(
+          width: double.infinity,
+          height: 56, // 3.5rem
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF3b82f6), Color(0xFF1d4ed8)],
+            ),
             borderRadius: BorderRadius.circular(12), // 0.75rem
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF3b82f6).withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _isLoading ? 'Criando conta...' : 'Criar conta',
-              style: GoogleFonts.inter(
-                fontSize: 16, // 1rem
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+          child: ElevatedButton(
+            onPressed: isLoading ? null : _register,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12), // 0.75rem
               ),
             ),
-            if (!_isLoading) ...[
-              const SizedBox(width: 8),
-              const Text('→', style: TextStyle(fontSize: 16)),
-            ],
-          ],
-        ),
-      ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  isLoading ? 'Criando conta...' : 'Criar conta',
+                  style: GoogleFonts.inter(
+                    fontSize: 16, // 1rem
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                if (!isLoading) ...[
+                  const SizedBox(width: 8),
+                  const Text('→', style: TextStyle(fontSize: 16)),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -749,73 +771,16 @@ class _RegisterPageState extends State<RegisterPage>
 
   void _register() async {
     if (_formKey.currentState?.validate() ?? false) {
-      if (!_acceptTerms) {
-        setState(() {
-          _errorMessage = 'Você deve aceitar os termos de uso para continuar';
-        });
-        return;
-      }
+      // Get contact based on selected method
+      String contact = _store.isEmailSelected.value
+          ? _emailController.text
+          : _phoneController.text;
 
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
-
-      try {
-        // Determina o contato e tipo
-        String contact = _isEmailSelected
-            ? _emailController.text
-            : _phoneController.text;
-        String contactType = _isEmailSelected ? 'email' : 'phone';
-
-        // Simula o envio do código de verificação
-        bool success;
-        if (_isEmailSelected) {
-          success = await VerificationService.sendVerificationCodeByEmail(
-            contact,
-          );
-        } else {
-          success = await VerificationService.sendVerificationCodeBySMS(
-            contact,
-          );
-        }
-
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-
-          if (success) {
-            // Mostra mensagem de sucesso
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Código de verificação enviado para ${_isEmailSelected ? 'seu email' : 'seu telefone'}!',
-                ),
-                backgroundColor: Colors.green,
-              ),
-            );
-
-            // Navega para a tela de verificação de código
-            context.go(
-              '/verify-code',
-              extra: {'contact': contact, 'contactType': contactType},
-            );
-          } else {
-            setState(() {
-              _errorMessage =
-                  'Erro ao enviar código de verificação. Tente novamente.';
-            });
-          }
-        }
-      } catch (e) {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-            _errorMessage = 'Erro inesperado. Tente novamente.';
-          });
-        }
-      }
+      await _store.registerUser(
+        contact: contact,
+        password: _passwordController.text,
+        context: context,
+      );
     }
   }
 }

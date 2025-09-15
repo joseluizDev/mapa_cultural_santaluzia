@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
+import '../stores/verification_code_store.dart';
 
 class VerificationCodePage extends StatefulWidget {
   final String contact;
@@ -36,17 +37,17 @@ class _VerificationCodePageState extends State<VerificationCodePage>
   late AnimationController _floatController2;
   late AnimationController _floatController3;
 
-  bool _isLoading = false;
-  bool _canResend = false;
-  int _resendCountdown = 60;
-  Timer? _timer;
-  String? _errorMessage;
+  // Replace direct state variables with store
+  late final VerificationCodeStore _store;
 
   @override
   void initState() {
     super.initState();
+    _store = VerificationCodeStore(
+      contact: widget.contact,
+      contactType: widget.contactType,
+    );
     _setupAnimations();
-    _startResendTimer();
   }
 
   void _setupAnimations() {
@@ -71,21 +72,6 @@ class _VerificationCodePageState extends State<VerificationCodePage>
     )..repeat(reverse: true);
   }
 
-  void _startResendTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_resendCountdown > 0) {
-        setState(() {
-          _resendCountdown--;
-        });
-      } else {
-        setState(() {
-          _canResend = true;
-        });
-        timer.cancel();
-      }
-    });
-  }
-
   @override
   void dispose() {
     for (var controller in _controllers) {
@@ -98,7 +84,7 @@ class _VerificationCodePageState extends State<VerificationCodePage>
     _floatController1.dispose();
     _floatController2.dispose();
     _floatController3.dispose();
-    _timer?.cancel();
+    _store.dispose();
     super.dispose();
   }
 
@@ -250,7 +236,15 @@ class _VerificationCodePageState extends State<VerificationCodePage>
               const SizedBox(height: 32), // 2rem
               _buildCodeInputs(),
               const SizedBox(height: 24), // 1.5rem
-              if (_errorMessage != null) _buildErrorMessage(),
+              ValueListenableBuilder<String?>(
+                valueListenable: _store.errorMessage,
+                builder: (context, errorMessage, child) {
+                  if (errorMessage != null) {
+                    return _buildErrorMessage(errorMessage);
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
               const SizedBox(height: 24), // 1.5rem
               _buildVerifyButton(),
               const SizedBox(height: 24), // 1.5rem
@@ -299,7 +293,7 @@ class _VerificationCodePageState extends State<VerificationCodePage>
         ),
         const SizedBox(height: 8), // 0.5rem
         Text(
-          'Digite o código de 4 dígitos enviado para ${_formatContact()}',
+          'Digite o código de 4 dígitos enviado para ${_store.formatContact()}',
           textAlign: TextAlign.center,
           style: GoogleFonts.inter(
             fontSize: 15, // 0.95rem
@@ -308,26 +302,6 @@ class _VerificationCodePageState extends State<VerificationCodePage>
         ),
       ],
     );
-  }
-
-  String _formatContact() {
-    if (widget.contactType == 'email') {
-      // Mascarar email: ex***@email.com
-      final parts = widget.contact.split('@');
-      if (parts.length == 2) {
-        final prefix = parts[0];
-        final maskedPrefix = prefix.length > 2
-            ? '${prefix.substring(0, 2)}***'
-            : '***';
-        return '$maskedPrefix@${parts[1]}';
-      }
-    } else {
-      // Mascarar telefone: (11) 9****-****
-      if (widget.contact.length >= 10) {
-        return '${widget.contact.substring(0, 6)}****-****';
-      }
-    }
-    return widget.contact;
   }
 
   Widget _buildCodeInputs() {
@@ -380,9 +354,8 @@ class _VerificationCodePageState extends State<VerificationCodePage>
                 _verifyCode();
               }
 
-              setState(() {
-                _errorMessage = null;
-              });
+              // Clear error message when user starts typing
+              _store.errorMessage.value = null;
             },
           ),
         );
@@ -390,7 +363,7 @@ class _VerificationCodePageState extends State<VerificationCodePage>
     );
   }
 
-  Widget _buildErrorMessage() {
+  Widget _buildErrorMessage(String errorMessage) {
     return Container(
       padding: const EdgeInsets.all(12), // 0.75rem
       decoration: BoxDecoration(
@@ -404,7 +377,7 @@ class _VerificationCodePageState extends State<VerificationCodePage>
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              _errorMessage!,
+              errorMessage,
               style: const TextStyle(
                 color: Color(0xFFdc2626),
                 fontSize: 14, // 0.875rem
@@ -417,87 +390,102 @@ class _VerificationCodePageState extends State<VerificationCodePage>
   }
 
   Widget _buildVerifyButton() {
-    return Container(
-      width: double.infinity,
-      height: 56, // 3.5rem
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF3b82f6), Color(0xFF1d4ed8)],
-        ),
-        borderRadius: BorderRadius.circular(12), // 0.75rem
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF3b82f6).withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ElevatedButton(
-        onPressed: _isLoading ? null : _verifyCode,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12), // 0.75rem
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _isLoading ? 'Verificando...' : 'Verificar código',
-              style: GoogleFonts.inter(
-                fontSize: 16, // 1rem
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
+    return ValueListenableBuilder<bool>(
+      valueListenable: _store.isLoading,
+      builder: (context, isLoading, child) {
+        return Container(
+          width: double.infinity,
+          height: 56, // 3.5rem
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF3b82f6), Color(0xFF1d4ed8)],
             ),
-            if (!_isLoading) ...[
-              const SizedBox(width: 8),
-              const Text(
-                '✓',
-                style: TextStyle(fontSize: 16, color: Colors.white),
+            borderRadius: BorderRadius.circular(12), // 0.75rem
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF3b82f6).withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
               ),
             ],
-          ],
-        ),
-      ),
+          ),
+          child: ElevatedButton(
+            onPressed: isLoading ? null : _verifyCode,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12), // 0.75rem
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  isLoading ? 'Verificando...' : 'Verificar código',
+                  style: GoogleFonts.inter(
+                    fontSize: 16, // 1rem
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                if (!isLoading) ...[
+                  const SizedBox(width: 8),
+                  const Text(
+                    '✓',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
   Widget _buildResendSection() {
-    return Column(
-      children: [
-        Text(
-          'Não recebeu o código?',
-          style: GoogleFonts.inter(
-            fontSize: 14, // 0.875rem
-            color: const Color(0xFF6b7280),
-          ),
-        ),
-        const SizedBox(height: 8),
-        if (_canResend)
-          TextButton(
-            onPressed: _resendCode,
-            child: Text(
-              'Reenviar código',
+    return ValueListenableBuilder<bool>(
+      valueListenable: _store.canResend,
+      builder: (context, canResend, child) {
+        return Column(
+          children: [
+            Text(
+              'Não recebeu o código?',
               style: GoogleFonts.inter(
                 fontSize: 14, // 0.875rem
-                color: const Color(0xFF3b82f6),
-                fontWeight: FontWeight.w500,
+                color: const Color(0xFF6b7280),
               ),
             ),
-          )
-        else
-          Text(
-            'Reenviar em ${_resendCountdown}s',
-            style: GoogleFonts.inter(
-              fontSize: 14, // 0.875rem
-              color: const Color(0xFF6b7280),
-            ),
-          ),
-      ],
+            const SizedBox(height: 8),
+            if (canResend)
+              TextButton(
+                onPressed: _resendCode,
+                child: Text(
+                  'Reenviar código',
+                  style: GoogleFonts.inter(
+                    fontSize: 14, // 0.875rem
+                    color: const Color(0xFF3b82f6),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              )
+            else
+              ValueListenableBuilder<int>(
+                valueListenable: _store.resendCountdown,
+                builder: (context, countdown, child) {
+                  return Text(
+                    'Reenviar em ${countdown}s',
+                    style: GoogleFonts.inter(
+                      fontSize: 14, // 0.875rem
+                      color: const Color(0xFF6b7280),
+                    ),
+                  );
+                },
+              ),
+          ],
+        );
+      },
     );
   }
 
@@ -535,70 +523,18 @@ class _VerificationCodePageState extends State<VerificationCodePage>
   }
 
   void _verifyCode() {
-    String code = _controllers.map((controller) => controller.text).join();
+    List<String> codeDigits = _controllers.map((controller) => controller.text).toList();
+    _store.verifyCode(codeDigits, context);
+  }
 
-    if (code.length != 4) {
-      setState(() {
-        _errorMessage = 'Por favor, digite todos os 4 dígitos do código';
-      });
-      return;
+  void _clearCodeInputs() {
+    for (var controller in _controllers) {
+      controller.clear();
     }
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    // Simular verificação do código
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-
-        // Para demonstração, aceitar qualquer código que termine com "0"
-        if (code.endsWith('0')) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Código verificado com sucesso!'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          // Navegar para a tela de completar perfil
-          context.go(
-            '/complete-profile',
-            extra: {
-              'contact': widget.contact,
-              'contactType': widget.contactType,
-            },
-          );
-        } else {
-          setState(() {
-            _errorMessage = 'Código inválido. Tente novamente.';
-          });
-          // Limpar campos
-          for (var controller in _controllers) {
-            controller.clear();
-          }
-          _focusNodes[0].requestFocus();
-        }
-      }
-    });
+    _focusNodes[0].requestFocus();
   }
 
   void _resendCode() {
-    setState(() {
-      _canResend = false;
-      _resendCountdown = 60;
-    });
-
-    _startResendTimer();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Código reenviado para ${_formatContact()}'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    _store.resendCode(context);
   }
 }
