@@ -560,11 +560,18 @@ class _VerificationCodePageState extends State<VerificationCodePage>
         if (code.endsWith('0')) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Conta verificada com sucesso!'),
+              content: Text('Código verificado com sucesso!'),
               backgroundColor: Colors.green,
             ),
           );
-          context.go('/home');
+          // Navegar para a tela de completar perfil
+          context.go(
+            '/complete-profile',
+            extra: {
+              'contact': widget.contact,
+              'contactType': widget.contactType,
+            },
+          );
         } else {
           setState(() {
             _errorMessage = 'Código inválido. Tente novamente.';

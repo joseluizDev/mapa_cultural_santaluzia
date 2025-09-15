@@ -3,6 +3,7 @@ import 'package:mapa_cultural_santaluzia/presentation/pages/about_page.dart';
 import 'package:mapa_cultural_santaluzia/presentation/pages/advertisement_page.dart';
 import 'package:mapa_cultural_santaluzia/presentation/pages/talent_detail_page.dart';
 
+import '../presentation/pages/complete_profile_page.dart';
 import '../presentation/pages/home_page.dart';
 import '../presentation/pages/login_page.dart';
 import '../presentation/pages/register_page.dart';
@@ -21,6 +22,9 @@ class AppRoutes {
 
   /// Rota da página de verificação de código
   static const String verifyCode = '/verify-code';
+
+  /// Rota da página de completar perfil
+  static const String completeProfile = '/complete-profile';
 
   /// Rota da página sobre
   static const String about = '/about';
@@ -55,6 +59,20 @@ class AppRoutes {
           final contact = extra?['contact'] ?? '';
           final contactType = extra?['contactType'] ?? 'email';
           return VerificationCodePage(
+            contact: contact,
+            contactType: contactType,
+          );
+        },
+      ),
+
+      // Rota da página de completar perfil
+      GoRoute(
+        path: completeProfile,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          final contact = extra?['contact'] ?? '';
+          final contactType = extra?['contactType'] ?? 'email';
+          return CompleteProfilePage(
             contact: contact,
             contactType: contactType,
           );
