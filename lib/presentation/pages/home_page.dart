@@ -11,8 +11,16 @@ import '../widgets/custom_scaffold.dart';
 import '../widgets/statistics_section.dart';
 import '../widgets/talent_card.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<Advertisement>? _cachedAdvertisements;
+  List<Statistic>? _cachedStatistics;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +99,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildStatisticsSection() {
-    final estatisticas = [
+    _cachedStatistics ??= [
       const Statistic(quantidade: 500, rotulo: 'Famosos'),
       const Statistic(quantidade: 50, rotulo: 'Cidades'),
       const Statistic(quantidade: 1000, rotulo: 'Conexões'),
@@ -100,13 +108,13 @@ class HomePage extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Container(
         decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
-        child: StatisticsSection(estatisticas: estatisticas),
+        child: StatisticsSection(estatisticas: _cachedStatistics!),
       ),
     );
   }
 
   Widget _buildAdvertisementCarousel() {
-    final propagandas = _getMockAdvertisements();
+    _cachedAdvertisements ??= _getMockAdvertisements();
 
     return SliverToBoxAdapter(
       child: Container(
@@ -138,7 +146,7 @@ class HomePage extends StatelessWidget {
                         ),
                   ),
                   const SizedBox(height: AppDimensions.largeSpacing),
-                  AdvertisementCarousel(propagandas: propagandas),
+                  AdvertisementCarousel(propagandas: _cachedAdvertisements!),
                 ],
               ),
             );

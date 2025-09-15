@@ -1,60 +1,30 @@
 import '../domain/entities/talent.dart';
 
-/// Retorna lista de talentos mocados para desenvolvimento
+// Cache for mock talents to avoid recreating the list every time
+List<Talent>? _cachedTalents;
+
+/// Retorna uma lista de talentos mockados para testes
 List<Talent> getMockTalents() {
-  return [
+  // Return cached talents if already created
+  if (_cachedTalents != null) {
+    return _cachedTalents!;
+  }
+
+  _cachedTalents = [
     Talent(
-      nome: 'Lucas Mendes',
-      cidade: 'Curitiba',
-      estado: 'PR',
+      nome: 'Patricia Almeida',
+      cidade: 'Santa Luzia',
+      estado: 'PB',
       descricao:
-          'Consultor financeiro com mais de 8 anos de experiência em investimentos e planejamento patrimonial. Especialista em análise de risco, gestão de carteiras e consultoria para empresas e pessoas físicas. Possui certificações CFA e CFP, com atuação em diversos segmentos do mercado financeiro. Ajuda empreendedores e profissionais a tomarem decisões estratégicas sobre seus investimentos, sempre priorizando a segurança e o crescimento sustentável do patrimônio.',
+          'Tradutora especializada em idiomas estrangeiros com 10 anos de experiência. Fluente em inglês, espanhol e francês. Especialista em tradução juramentada, literária e técnica. Trabalha com empresas multinacionais, escritores e instituições educacionais. Formada em Letras e pós-graduada em Tradução Especializada. Apaixonada por promover o intercâmbio cultural através da língua e da tradução de alta qualidade.',
       imagemUrl:
-          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+          'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop&crop=face',
       habilidades: [
-        'Consultoria Financeira',
-        'Investimentos',
-        'Análise de Risco',
-        'Planejamento',
+        'Inglês',
+        'Espanhol',
+        'Francês',
+        'Tradução Juramentada',
       ],
-      instagram: '@lucas_mendes_financeiro',
-      whatsapp: '+55 41 99999-1234',
-      rating: 4.8,
-      totalRatings: 23,
-      ratings: [
-        Rating(
-          userId: '1',
-          userName: 'Maria Silva',
-          rating: 5.0,
-          comment:
-              'Excelente consultor! Me ajudou muito com meus investimentos.',
-          date: DateTime(2024, 8, 15),
-        ),
-        Rating(
-          userId: '2',
-          userName: 'João Santos',
-          rating: 4.5,
-          comment: 'Muito profissional e competente.',
-          date: DateTime(2024, 7, 22),
-        ),
-        Rating(
-          userId: '3',
-          userName: 'Ana Costa',
-          rating: 5.0,
-          comment: 'Recomendo fortemente! Resultados acima das expectativas.',
-          date: DateTime(2024, 6, 10),
-        ),
-      ],
-    ),
-    Talent(
-      nome: 'Patricia Costa',
-      cidade: 'Salvador',
-      estado: 'BA',
-      descricao:
-          'Tradutora e intérprete profissional com fluência nativa em português e fluência avançada em 5 idiomas: inglês, espanhol, francês, alemão e italiano. Mais de 10 anos de experiência em tradução técnica, jurídica e literária. Trabalha com empresas multinacionais, órgãos governamentais e eventos internacionais. Especialista em localização de software, tradução de documentos legais e interpretação simultânea em conferências. Comprometida com a precisão cultural e terminológica em todos os seus trabalhos.',
-      imagemUrl:
-          'https://images.unsplash.com/photo-1494790108755-2616b612b6c8?w=150&h=150&fit=crop&crop=face',
-      habilidades: ['Tradução', 'Inglês', 'Espanhol', 'Francês', 'Alemão'],
       instagram: '@patricia_tradutora',
       whatsapp: '+55 71 98888-5678',
       rating: 4.9,
@@ -193,41 +163,79 @@ List<Talent> getMockTalents() {
           'Desenvolvedor Full Stack com 7 anos de experiência em desenvolvimento web e mobile. Especialista em React, Node.js, TypeScript e MongoDB. Trabalha com metodologias ágeis (Scrum/Kanban) e possui experiência em arquitetura de microsserviços e DevOps. Já desenvolveu aplicações para startups, empresas de tecnologia e instituições financeiras. Apaixonado por clean code, testes automatizados e desenvolvimento de produtos escaláveis. Também oferece mentoria para desenvolvedores iniciantes e palestras sobre tecnologia.',
       imagemUrl:
           'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
-      habilidades: ['React', 'Node.js', 'TypeScript', 'MongoDB'],
-      instagram: '@carlos_dev_fullstack',
-      whatsapp: '+55 21 94444-2345',
+      habilidades: [
+        'Desenvolvimento Web',
+        'React',
+        'Node.js',
+        'TypeScript',
+        'MongoDB'
+      ],
+      instagram: '@carlos_dev',
+      whatsapp: '+55 21 94444-1234',
       rating: 4.9,
       totalRatings: 42,
       ratings: [
         Rating(
           userId: '14',
-          userName: 'Gabriela Torres',
+          userName: 'Marina Ribeiro',
           rating: 5.0,
-          comment: 'Sistema perfeito! Zero bugs.',
+          comment:
+              'Desenvolveu um sistema incrível para minha empresa. Super recomendo!',
           date: DateTime(2024, 9, 10),
         ),
         Rating(
           userId: '15',
-          userName: 'Rafael Souza',
-          rating: 4.5,
-          comment: 'Código limpo e bem documentado.',
+          userName: 'Alexandre Costa',
+          rating: 4.8,
+          comment: 'Excelente profissional, código limpo e entrega no prazo.',
           date: DateTime(2024, 8, 22),
         ),
         Rating(
           userId: '16',
-          userName: 'Mariana Lima',
+          userName: 'Juliana Mendes',
           rating: 5.0,
-          comment: 'Excelente desenvolvedor!',
-          date: DateTime(2024, 7, 28),
+          comment: 'Mentoria transformadora. Recomendo para iniciantes!',
+          date: DateTime(2024, 7, 15),
         ),
+      ],
+    ),
+    Talent(
+      nome: 'Mariana Costa',
+      cidade: 'Santa Luzia',
+      estado: 'PB',
+      descricao:
+          'Chef de cozinha especializada em gastronomia local e fusão de sabores. 8 anos de experiência em restaurantes de alta gastronomia e catering para eventos especiais. Formada em Gastronomia pela Universidade Federal da Paraíba, com especialização em Cozinha Brasileira Contemporânea. Expert em utilizar ingredientes locais e regionais para criar pratos únicos que valorizam a cultura local. Oferece consultoria gastronômica, aulas particulares de culinária e catering personalizado para eventos. Apaixonada por promover a rica culinária da Paraíba.',
+      imagemUrl:
+          'https://images.unsplash.com/photo-1567532939604-b6b5b0e1607d?w=150&h=150&fit=crop&crop=face',
+      habilidades: [
+        'Gastronomia Local',
+        'Cozinha Brasileira',
+        'Catering',
+        'Consultoria Gastronômica',
+      ],
+      instagram: '@mariana_chef',
+      whatsapp: '+55 83 93333-5678',
+      rating: 5.0,
+      totalRatings: 29,
+      ratings: [
         Rating(
           userId: '17',
-          userName: 'Diego Santos',
+          userName: 'Roberto Almeida',
           rating: 5.0,
-          comment: 'Superou todas as expectativas.',
-          date: DateTime(2024, 6, 15),
+          comment:
+              'Buffet do casamento foi sensacional! Cada prato uma delícia.',
+          date: DateTime(2024, 9, 8),
+        ),
+        Rating(
+          userId: '18',
+          userName: 'Sofia Oliveira',
+          rating: 5.0,
+          comment: 'Aulas maravilhosas! Aprendi muito sobre a culinária local.',
+          date: DateTime(2024, 8, 17),
         ),
       ],
     ),
   ];
+  
+  return _cachedTalents!;
 }

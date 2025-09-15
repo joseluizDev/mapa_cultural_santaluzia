@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
@@ -92,19 +93,33 @@ class TalentCard extends StatelessWidget {
               ),
             ],
           ),
-          child: CircleAvatar(
-            radius: AppDimensions.cardAvatarSize / 2,
-            backgroundImage: talento.imagemUrl.isNotEmpty
-                ? NetworkImage(talento.imagemUrl)
-                : null,
-            backgroundColor: AppColors.lightGray,
-            child: talento.imagemUrl.isEmpty
-                ? Icon(
-                    Icons.person,
-                    size: AppDimensions.cardAvatarSize * 0.6,
-                    color: AppColors.mediumGray,
-                  )
-                : null,
+          child: ClipOval(
+            child: CachedNetworkImage(
+              imageUrl: talento.imagemUrl,
+              width: AppDimensions.cardAvatarSize,
+              height: AppDimensions.cardAvatarSize,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => Container(
+                width: AppDimensions.cardAvatarSize,
+                height: AppDimensions.cardAvatarSize,
+                color: AppColors.lightGray,
+                child: const Icon(
+                  Icons.person,
+                  size: AppDimensions.cardAvatarSize * 0.6,
+                  color: AppColors.mediumGray,
+                ),
+              ),
+              errorWidget: (context, url, error) => Container(
+                width: AppDimensions.cardAvatarSize,
+                height: AppDimensions.cardAvatarSize,
+                color: AppColors.lightGray,
+                child: const Icon(
+                  Icons.person,
+                  size: AppDimensions.cardAvatarSize * 0.6,
+                  color: AppColors.mediumGray,
+                ),
+              ),
+            ),
           ),
         ),
         const SizedBox(width: AppDimensions.mediumSpacing),
@@ -190,7 +205,7 @@ class TalentCard extends StatelessWidget {
             ),
           ),
         );
-      }).toList(),
+      }).toList(growable: false),
     );
   }
 

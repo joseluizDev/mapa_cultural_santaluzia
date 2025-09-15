@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/constants/colors.dart';
@@ -199,23 +200,31 @@ class _AdvertisementCarouselState extends State<AdvertisementCarousel>
             fit: StackFit.expand,
             children: [
               // Imagem de fundo
-              Image.network(
-                propaganda.imagemUrl,
+              CachedNetworkImage(
+                imageUrl: propaganda.imagemUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      gradient: AppColors.warmGradient,
+                placeholder: (context, url) => Container(
+                  decoration: const BoxDecoration(
+                    gradient: AppColors.warmGradient,
+                  ),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.culturalBlue,
                     ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.image_not_supported,
-                        size: 64,
-                        color: AppColors.gray500,
-                      ),
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  decoration: const BoxDecoration(
+                    gradient: AppColors.warmGradient,
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.image_not_supported,
+                      size: 64,
+                      color: AppColors.gray500,
                     ),
-                  );
-                },
+                  ),
+                ),
               ),
 
               // Overlay com gradiente
@@ -339,7 +348,7 @@ class _AdvertisementCarouselState extends State<AdvertisementCarousel>
             borderRadius: BorderRadius.circular(7),
           ),
         ),
-      ),
+      ).toList(growable: false),
     );
   }
 }

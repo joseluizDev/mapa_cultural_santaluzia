@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mapa_cultural_santaluzia/presentation/widgets/custom_scaffold.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
 import '../../domain/entities/talent.dart';
 import '../../mock/talents_mock.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 /// Página de detalhes de um talento.
 /// Exibe informações completas sobre o talento selecionado.
@@ -191,13 +193,30 @@ class TalentDetailPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(
                 AppDimensions.largeBorderRadius,
               ),
-              image: DecorationImage(
-                image: NetworkImage(talento.imagemUrl),
-                fit: BoxFit.cover,
-              ),
               border: Border.all(
                 color: AppColors.white.withOpacity(0.8),
                 width: 3,
+              ),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppDimensions.largeBorderRadius),
+              child: CachedNetworkImage(
+                imageUrl: talento.imagemUrl,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(
+                  color: AppColors.lightGray,
+                  child: const Icon(
+                    Icons.person,
+                    color: AppColors.mediumGray,
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  color: AppColors.lightGray,
+                  child: const Icon(
+                    Icons.person,
+                    color: AppColors.mediumGray,
+                  ),
+                ),
               ),
             ),
           ),
