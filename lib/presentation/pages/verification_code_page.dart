@@ -354,9 +354,8 @@ class _VerificationCodePageState extends State<VerificationCodePage>
                 _verifyCode();
               }
 
-              setState(() {
-                _errorMessage = null;
-              });
+              // Clear error message when user starts typing
+              _store.errorMessage.value = null;
             },
           ),
         );

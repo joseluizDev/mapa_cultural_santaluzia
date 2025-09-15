@@ -24,7 +24,7 @@ class AdvertisementCarousel extends StatefulWidget {
 class _AdvertisementCarouselState extends State<AdvertisementCarousel>
     with TickerProviderStateMixin {
   late PageController _pageController;
-  int _currentIndex = 0;
+  late ValueNotifier<int> _currentIndex;
   Timer? _timer;
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -32,6 +32,7 @@ class _AdvertisementCarouselState extends State<AdvertisementCarousel>
   @override
   void initState() {
     super.initState();
+    _currentIndex = ValueNotifier(0);
     _pageController = PageController(viewportFraction: 0.95);
     _startAutoPlay();
     
@@ -53,6 +54,7 @@ class _AdvertisementCarouselState extends State<AdvertisementCarousel>
     _timer?.cancel();
     _pageController.dispose();
     _animationController.dispose();
+    _currentIndex.dispose();
     super.dispose();
   }
 
@@ -67,7 +69,7 @@ class _AdvertisementCarouselState extends State<AdvertisementCarousel>
   }
 
   void _nextSlide() {
-    final nextIndex = (_currentIndex + 1) % widget.propagandas.length;
+    final nextIndex = (_currentIndex.value + 1) % widget.propagandas.length;
     _pageController.animateToPage(
       nextIndex,
       duration: const Duration(milliseconds: 600),
@@ -77,7 +79,7 @@ class _AdvertisementCarouselState extends State<AdvertisementCarousel>
 
   void _previousSlide() {
     final previousIndex =
-        (_currentIndex - 1 + widget.propagandas.length) % widget.propagandas.length;
+        (_currentIndex.value - 1 + widget.propagandas.length) % widget.propagandas.length;
     _pageController.animateToPage(
       previousIndex,
       duration: const Duration(milliseconds: 600),
@@ -122,11 +124,9 @@ class _AdvertisementCarouselState extends State<AdvertisementCarousel>
             PageView.builder(
               controller: _pageController,
               onPageChanged: (index) {
-                setState(() {
-                  _currentIndex = index;
-                  _animationController.reset();
-                  _animationController.forward();
-                });
+                _currentIndex.value = index;
+                _animationController.reset();
+                _animationController.forward();
               },
               itemCount: widget.propagandas.length,
               itemBuilder: (context, index) {
@@ -318,37 +318,42 @@ class _AdvertisementCarouselState extends State<AdvertisementCarousel>
   }
 
   Widget _buildIndicators() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        widget.propagandas.length,
-        (index) => Container(
-          width: 14,
-          height: 14,
-          margin: const EdgeInsets.symmetric(horizontal: 6),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: index == _currentIndex
-                ? Colors.white
-                : Colors.white.withOpacity(0.5),
-            border: Border.all(
-              color: Colors.white, 
-              width: 2,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
+    return ValueListenableBuilder<int>(
+      valueListenable: _currentIndex,
+      builder: (context, currentIndex, child) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            widget.propagandas.length,
+            (index) => Container(
+              width: 14,
+              height: 14,
+              margin: const EdgeInsets.symmetric(horizontal: 6),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: index == currentIndex
+                    ? Colors.white
+                    : Colors.white.withOpacity(0.5),
+                border: Border.all(
+                  color: Colors.white, 
+                  width: 2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: InkWell(
-            onTap: () => _goToSlide(index),
-            borderRadius: BorderRadius.circular(7),
-          ),
-        ),
-      ).toList(growable: false),
+              child: InkWell(
+                onTap: () => _goToSlide(index),
+                borderRadius: BorderRadius.circular(7),
+              ),
+            ),
+          ).toList(growable: false),
+        );
+      },
     );
   }
 }
