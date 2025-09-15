@@ -90,23 +90,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       animation: _gradientController,
       builder: (context, child) {
         return Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: const [
-                Color(0xFFc63122), // Vermelho Brasil
-                Color(0xFF115a91), // Azul Profundo
-                Color(0xFF253959), // Azul Escuro
-                Color(0xFF447832), // Verde Brasileiro
-                Color(0xFFc63122), // Vermelho Brasil
-              ],
-              stops: const [0.0, 0.25, 0.5, 0.75, 1.0],
-              transform: GradientRotation(
-                _gradientController.value * 2 * 3.14159,
-              ),
-            ),
-          ),
+          decoration: const BoxDecoration(gradient: AppColors.warmGradient),
         );
       },
     );
@@ -235,10 +219,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               _buildHeader(),
               const SizedBox(height: 32), // 2rem
               _buildForm(),
-              const SizedBox(height: 24), // 1.5rem
-              _buildGoogleLogin(),
-              const SizedBox(height: 24), // 1.5rem
-              _buildDivider(),
               const SizedBox(height: 24), // 1.5rem
               _buildCreateAccountLink(),
             ],
@@ -460,76 +440,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildGoogleLogin() {
-    return Container(
-      width: double.infinity,
-      height: 48, // 3rem
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFd1d5db)),
-        borderRadius: BorderRadius.circular(8), // 0.5rem
-      ),
-      child: TextButton(
-        onPressed: _isLoading ? null : _loginWithGoogle,
-        style: TextButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8), // 0.5rem
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/icons/google_logo.png', // You'll need to add this asset
-              height: 20,
-              width: 20,
-              errorBuilder: (context, error, stackTrace) {
-                return const Text(
-                  'G',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                );
-              },
-            ),
-            const SizedBox(width: 12), // 0.75rem
-            Text(
-              'Continuar com Google',
-              style: GoogleFonts.inter(
-                fontSize: 14, // 0.875rem
-                color: const Color(0xFF374151),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDivider() {
-    return Row(
-      children: [
-        Expanded(child: Container(height: 1, color: const Color(0xFFd1d5db))),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16), // 1rem
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 4,
-            ), // 0.5rem
-            color: Colors.white,
-            child: Text(
-              'ou',
-              style: GoogleFonts.inter(
-                fontSize: 14, // 0.875rem
-                color: const Color(0xFF6b7280),
-              ),
-            ),
-          ),
-        ),
-        Expanded(child: Container(height: 1, color: const Color(0xFFd1d5db))),
-      ],
-    );
-  }
-
   Widget _buildCreateAccountLink() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -587,22 +497,5 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         }
       });
     }
-  }
-
-  void _loginWithGoogle() {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    // Simulate Google login process
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _errorMessage = 'Erro ao conectar com Google. Tente novamente.';
-        });
-      }
-    });
   }
 }

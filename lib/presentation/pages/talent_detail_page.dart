@@ -94,47 +94,49 @@ class TalentDetailPage extends StatelessWidget {
 
   Widget _buildErroPage(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.error_outline,
-                size: 64,
-                color: AppColors.primaryText,
-              ),
-              const SizedBox(height: AppDimensions.mediumSpacing),
-              Text(
-                'Talento não encontrado',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+      body: Container(
+        decoration: const BoxDecoration(gradient: AppColors.warmGradient),
+        child: SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.error_outline,
+                  size: 64,
                   color: AppColors.primaryText,
-                  fontWeight: FontWeight.bold,
                 ),
-              ),
-              const SizedBox(height: AppDimensions.smallSpacing),
-              Text(
-                'O talento "$nomeTalento" não foi encontrado.',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.secondaryText,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppDimensions.largeSpacing),
-              ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.culturalRed,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.largeSpacing,
-                    vertical: AppDimensions.mediumSpacing,
+                const SizedBox(height: AppDimensions.mediumSpacing),
+                Text(
+                  'Talento não encontrado',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: AppColors.primaryText,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                child: const Text('Voltar'),
-              ),
-            ],
+                const SizedBox(height: AppDimensions.smallSpacing),
+                Text(
+                  'O talento "$nomeTalento" não foi encontrado.',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.secondaryText,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppDimensions.largeSpacing),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.culturalRed,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.largeSpacing,
+                      vertical: AppDimensions.mediumSpacing,
+                    ),
+                  ),
+                  child: const Text('Voltar'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

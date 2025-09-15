@@ -98,23 +98,7 @@ class _RegisterPageState extends State<RegisterPage>
       animation: _gradientController,
       builder: (context, child) {
         return Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: const [
-                Color(0xFFc63122), // Vermelho Brasil
-                Color(0xFF115a91), // Azul Profundo
-                Color(0xFF253959), // Azul Escuro
-                Color(0xFF447832), // Verde Brasileiro
-                Color(0xFFc63122), // Vermelho Brasil
-              ],
-              stops: const [0.0, 0.25, 0.5, 0.75, 1.0],
-              transform: GradientRotation(
-                _gradientController.value * 2 * 3.14159,
-              ),
-            ),
-          ),
+          decoration: const BoxDecoration(gradient: AppColors.warmGradient),
         );
       },
     );

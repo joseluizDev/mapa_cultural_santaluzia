@@ -20,11 +20,14 @@ class CustomScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[_buildAppBar(context)];
-        },
-        body: body,
+      body: Container(
+        decoration: const BoxDecoration(gradient: AppColors.warmGradient),
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[_buildAppBar(context)];
+          },
+          body: body,
+        ),
       ),
     );
   }
