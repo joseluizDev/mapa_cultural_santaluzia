@@ -14,21 +14,46 @@ class StatisticWidget extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          estatistica.quantidadeFormatada,
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            color: AppColors.whiteText,
-            fontWeight: FontWeight.w700,
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.white.withOpacity(0.2),
+            border: Border.all(
+              color: AppColors.white.withOpacity(0.4),
+              width: 2,
+            ),
+          ),
+          child: Text(
+            estatistica.quantidadeFormatada,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: AppColors.whiteText,
+                  fontWeight: FontWeight.w800,
+                  shadows: [
+                    Shadow(
+                      offset: const Offset(1, 1),
+                      blurRadius: 2,
+                      color: Colors.black.withOpacity(0.3),
+                    ),
+                  ],
+                ),
           ),
         ),
-        const SizedBox(height: AppDimensions.verySmallSpacing),
+        const SizedBox(height: AppDimensions.smallSpacing),
         Text(
           estatistica.rotulo.toUpperCase(),
           style: Theme.of(context).textTheme.labelMedium?.copyWith(
-            color: AppColors.whiteText.withOpacity(0.9),
-            letterSpacing: 1.2,
-            fontWeight: FontWeight.w500,
-          ),
+                color: AppColors.whiteText.withOpacity(0.9),
+                letterSpacing: 1.2,
+                fontWeight: FontWeight.w600,
+                shadows: [
+                  Shadow(
+                    offset: const Offset(1, 1),
+                    blurRadius: 1,
+                    color: Colors.black.withOpacity(0.3),
+                  ),
+                ],
+              ),
         ),
       ],
     );
@@ -44,7 +69,7 @@ class StatisticsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-        vertical: AppDimensions.extraLargeSpacing,
+        vertical: AppDimensions.extraLargeSpacing * 1.5,
         horizontal: AppDimensions.mediumSpacing,
       ),
       child: Row(

@@ -17,29 +17,32 @@ class TalentCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardGlassmorphismBackground,
-        borderRadius: BorderRadius.circular(
-          AppDimensions.veryLargeBorderRadius,
-        ),
+        borderRadius: BorderRadius.circular(AppDimensions.veryLargeBorderRadius),
         border: Border.all(
-          color: AppColors.cardBorder.withOpacity(0.2),
+          color: AppColors.cardBorder.withOpacity(0.3),
           width: 1,
         ),
-        boxShadow: AppShadows.cardShadow,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.cardShadow.withOpacity(0.3),
+            offset: const Offset(0, 6),
+            blurRadius: 16,
+            spreadRadius: 0,
+          ),
+        ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(
-          AppDimensions.veryLargeBorderRadius,
-        ),
+        borderRadius: BorderRadius.circular(AppDimensions.veryLargeBorderRadius),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  AppColors.cream.withOpacity(0.9),
-                  AppColors.cream.withOpacity(0.7),
+                  AppColors.cream.withOpacity(0.95),
+                  AppColors.cream.withOpacity(0.85),
                 ],
               ),
             ),
@@ -47,20 +50,19 @@ class TalentCard extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: onTap,
-                borderRadius: BorderRadius.circular(
-                  AppDimensions.veryLargeBorderRadius,
-                ),
+                borderRadius: BorderRadius.circular(AppDimensions.veryLargeBorderRadius),
                 child: Padding(
-                  // Redução de padding para diminuir altura total do card
-                  padding: const EdgeInsets.all(AppDimensions.smallSpacing),
+                  padding: const EdgeInsets.all(AppDimensions.mediumSpacing),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildCabecalho(),
-                      const SizedBox(height: AppDimensions.verySmallSpacing),
+                      const SizedBox(height: AppDimensions.smallSpacing),
                       _buildDescricao(context),
                       const SizedBox(height: AppDimensions.smallSpacing),
                       _buildHabilidades(),
+                      const Spacer(),
+                      _buildRating(),
                     ],
                   ),
                 ),
@@ -75,20 +77,35 @@ class TalentCard extends StatelessWidget {
   Widget _buildCabecalho() {
     return Row(
       children: [
-        CircleAvatar(
-          // Avatar ligeiramente menor para reduzir altura
-          radius: (AppDimensions.cardAvatarSize * 0.8) / 2,
-          backgroundImage: talento.imagemUrl.isNotEmpty
-              ? NetworkImage(talento.imagemUrl)
-              : null,
-          backgroundColor: AppColors.lightGray,
-          child: talento.imagemUrl.isEmpty
-              ? Icon(
-                  Icons.person,
-                  size: AppDimensions.cardAvatarSize * 0.48,
-                  color: AppColors.mediumGray,
-                )
-              : null,
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: AppColors.culturalBlue.withOpacity(0.3),
+              width: 2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.culturalBlue.withOpacity(0.2),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: CircleAvatar(
+            radius: AppDimensions.cardAvatarSize / 2,
+            backgroundImage: talento.imagemUrl.isNotEmpty
+                ? NetworkImage(talento.imagemUrl)
+                : null,
+            backgroundColor: AppColors.lightGray,
+            child: talento.imagemUrl.isEmpty
+                ? Icon(
+                    Icons.person,
+                    size: AppDimensions.cardAvatarSize * 0.6,
+                    color: AppColors.mediumGray,
+                  )
+                : null,
+          ),
         ),
         const SizedBox(width: AppDimensions.mediumSpacing),
         Expanded(
@@ -98,8 +115,8 @@ class TalentCard extends StatelessWidget {
               Text(
                 talento.nome,
                 style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
                   color: AppColors.primaryText,
                 ),
                 maxLines: 1,
@@ -110,7 +127,7 @@ class TalentCard extends StatelessWidget {
                 children: [
                   const Icon(
                     Icons.location_on,
-                    size: 14,
+                    size: 16,
                     color: AppColors.secondaryText,
                   ),
                   const SizedBox(width: AppDimensions.verySmallSpacing),
@@ -118,7 +135,7 @@ class TalentCard extends StatelessWidget {
                     child: Text(
                       talento.localizacaoCompleta,
                       style: const TextStyle(
-                        fontSize: 12,
+                        fontSize: 14,
                         color: AppColors.secondaryText,
                       ),
                       maxLines: 1,
@@ -137,12 +154,11 @@ class TalentCard extends StatelessWidget {
   Widget _buildDescricao(BuildContext context) {
     return Text(
       talento.descricao,
-      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-        color: AppColors.primaryText,
-        height: 1.4,
-      ),
-      // Menos linhas para reduzir altura
-      maxLines: 1,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: AppColors.primaryText,
+            height: 1.5,
+          ),
+      maxLines: 2,
       overflow: TextOverflow.ellipsis,
     );
   }
@@ -158,25 +174,52 @@ class TalentCard extends StatelessWidget {
             vertical: AppDimensions.verySmallSpacing,
           ),
           decoration: BoxDecoration(
-            color: AppColors.culturalBlue.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(
-              AppDimensions.smallBorderRadius,
-            ),
+            color: AppColors.culturalBlue.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(AppDimensions.smallBorderRadius),
             border: Border.all(
-              color: AppColors.culturalBlue.withOpacity(0.3),
-              width: 0.5,
+              color: AppColors.culturalBlue.withOpacity(0.4),
+              width: 0.8,
             ),
           ),
           child: Text(
             habilidade,
             style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
               color: AppColors.culturalBlue,
             ),
           ),
         );
       }).toList(),
+    );
+  }
+
+  Widget _buildRating() {
+    return Row(
+      children: [
+        const Icon(
+          Icons.star,
+          color: Colors.amber,
+          size: 20,
+        ),
+        const SizedBox(width: 4),
+        Text(
+          '${talento.rating}',
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: AppColors.primaryText,
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          '(${talento.totalRatings})',
+          style: const TextStyle(
+            fontSize: 12,
+            color: AppColors.secondaryText,
+          ),
+        ),
+      ],
     );
   }
 }

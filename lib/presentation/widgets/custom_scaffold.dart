@@ -80,6 +80,8 @@ class CustomScaffold extends StatelessWidget {
                       PrimaryButton(
                         text: 'Criar conta',
                         onPressed: () => GoRouter.of(context).go('/register'),
+                        backgroundColor: AppColors.white,
+                        textColor: AppColors.culturalBlue,
                       ),
                     ],
                   ),

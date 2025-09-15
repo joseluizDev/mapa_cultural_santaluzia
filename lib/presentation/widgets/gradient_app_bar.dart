@@ -18,14 +18,30 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
+      decoration: BoxDecoration(
+        gradient: AppColors.primaryGradient,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+          ),
+        ],
+      ),
       child: AppBar(
         title: Text(
           titulo,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: AppColors.whiteText,
-            fontWeight: FontWeight.w600,
-          ),
+                color: AppColors.whiteText,
+                fontWeight: FontWeight.w700,
+                shadows: [
+                  Shadow(
+                    offset: const Offset(1, 1),
+                    blurRadius: 2,
+                    color: Colors.black.withOpacity(0.3),
+                  ),
+                ],
+              ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -57,9 +73,8 @@ class NavigationButton extends StatelessWidget {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-        foregroundColor: active
-            ? AppColors.whiteText
-            : AppColors.whiteText.withOpacity(0.7),
+        foregroundColor:
+            active ? AppColors.whiteText : AppColors.whiteText.withOpacity(0.7),
         padding: const EdgeInsets.symmetric(
           horizontal: AppDimensions.mediumSpacing,
           vertical: AppDimensions.smallSpacing,
@@ -68,11 +83,11 @@ class NavigationButton extends StatelessWidget {
       child: Text(
         text,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: active
-              ? AppColors.whiteText
-              : AppColors.whiteText.withOpacity(0.7),
-          fontWeight: active ? FontWeight.w600 : FontWeight.w400,
-        ),
+              color: active
+                  ? AppColors.whiteText
+                  : AppColors.whiteText.withOpacity(0.7),
+              fontWeight: active ? FontWeight.w600 : FontWeight.w400,
+            ),
       ),
     );
   }

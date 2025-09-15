@@ -35,7 +35,7 @@ class HomePage extends StatelessWidget {
         decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
         child: Column(
           children: [
-            const SizedBox(height: AppDimensions.extraLargeSpacing),
+            const SizedBox(height: AppDimensions.extraLargeSpacing * 1.5),
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppDimensions.mediumSpacing,
@@ -48,11 +48,17 @@ class HomePage extends StatelessWidget {
                   children: [
                     Text(
                       'Descubra Famosos Incríveis na Sua Região',
-                      style: Theme.of(context).textTheme.displayMedium
-                          ?.copyWith(
+                      style: Theme.of(context).textTheme.displayMedium?.copyWith(
                             color: AppColors.whiteText,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w800,
                             height: 1.2,
+                            shadows: [
+                              Shadow(
+                                offset: const Offset(2, 2),
+                                blurRadius: 4,
+                                color: Colors.black.withOpacity(0.3),
+                              ),
+                            ],
                           ),
                       textAlign: TextAlign.center,
                     ),
@@ -60,12 +66,20 @@ class HomePage extends StatelessWidget {
                     Text(
                       'Conecte-se com famosos talentosos, artistas e\nempreendedores locais. Encontre o talento perfeito para seu\nprojeto ou negócio.',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppColors.whiteText.withOpacity(0.9),
-                        height: 1.5,
-                      ),
+                            color: AppColors.whiteText.withOpacity(0.95),
+                            height: 1.6,
+                            fontWeight: FontWeight.w500,
+                            shadows: [
+                              Shadow(
+                                offset: const Offset(1, 1),
+                                blurRadius: 2,
+                                color: Colors.black.withOpacity(0.2),
+                              ),
+                            ],
+                          ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: AppDimensions.extraLargeSpacing),
+                    const SizedBox(height: AppDimensions.extraLargeSpacing * 2),
                   ],
                 ),
               ),
@@ -100,11 +114,35 @@ class HomePage extends StatelessWidget {
           horizontal: AppDimensions.mediumSpacing,
           vertical: AppDimensions.largeSpacing,
         ),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxWidth: AppDimensions.maxContentWidth,
-          ),
-          child: AdvertisementCarousel(propagandas: propagandas),
+        child: Builder(
+          builder: (context) {
+            return ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: AppDimensions.maxContentWidth,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Destaques',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: AppColors.primaryText,
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                  const SizedBox(height: AppDimensions.mediumSpacing),
+                  Text(
+                    'Confira as últimas novidades e oportunidades',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: AppColors.secondaryText,
+                        ),
+                  ),
+                  const SizedBox(height: AppDimensions.largeSpacing),
+                  AdvertisementCarousel(propagandas: propagandas),
+                ],
+              ),
+            );
+          }
         ),
       ),
     );
@@ -125,9 +163,17 @@ class HomePage extends StatelessWidget {
               Text(
                 'Famosos em Destaque',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: AppColors.primaryText,
-                  fontWeight: FontWeight.w600,
-                ),
+                      color: AppColors.primaryText,
+                      fontWeight: FontWeight.w700,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppDimensions.smallSpacing),
+              Text(
+                'Conheça alguns dos talentos mais populares',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: AppColors.secondaryText,
+                    ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppDimensions.extraLargeSpacing),
@@ -149,8 +195,7 @@ class HomePage extends StatelessWidget {
                       crossAxisCount: colunas,
                       crossAxisSpacing: AppDimensions.largeSpacing,
                       mainAxisSpacing: AppDimensions.largeSpacing,
-                      // Aumentado para deixar os cards mais baixos
-                      childAspectRatio: 1.8,
+                      childAspectRatio: 1.6,
                     ),
                     itemCount: talentos.length,
                     itemBuilder: (context, index) {
