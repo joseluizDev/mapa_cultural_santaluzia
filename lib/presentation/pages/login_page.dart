@@ -7,6 +7,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
+import '../stores/login_store.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,12 +31,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     filter: {"#": RegExp(r'[0-9]')},
   );
 
-  bool _isLoading = false;
-  String? _errorMessage;
+  // Replace direct state variables with store
+  late final LoginStore _store;
 
   @override
   void initState() {
     super.initState();
+    _store = LoginStore();
     _setupAnimations();
   }
 
@@ -69,6 +71,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     _floatController1.dispose();
     _floatController2.dispose();
     _floatController3.dispose();
+    _store.dispose();
     super.dispose();
   }
 
@@ -279,7 +282,15 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       key: _formKey,
       child: Column(
         children: [
-          if (_errorMessage != null) _buildErrorMessage(),
+          ValueListenableBuilder<String?>(
+            valueListenable: _store.errorMessage,
+            builder: (context, errorMessage, child) {
+              if (errorMessage != null) {
+                return _buildErrorMessage(errorMessage);
+              }
+              return const SizedBox.shrink();
+            },
+          ),
           _buildPhoneField(),
           const SizedBox(height: 16), // 1rem
           _buildPasswordField(),
@@ -290,7 +301,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildErrorMessage() {
+  Widget _buildErrorMessage(String errorMessage) {
     return Container(
       padding: const EdgeInsets.all(12), // 0.75rem
       margin: const EdgeInsets.only(bottom: 16), // 1rem
@@ -305,7 +316,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              _errorMessage!,
+              errorMessage,
               style: const TextStyle(
                 color: Color(0xFFdc2626),
                 fontSize: 14, // 0.875rem
@@ -394,49 +405,56 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   }
 
   Widget _buildLoginButton() {
-    return Container(
-      width: double.infinity,
-      height: 56, // 3.5rem
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF3b82f6), Color(0xFF1d4ed8)],
-        ),
-        borderRadius: BorderRadius.circular(12), // 0.75rem
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF3b82f6).withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ElevatedButton(
-        onPressed: _isLoading ? null : _login,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
+    return ValueListenableBuilder<bool>(
+      valueListenable: _store.isLoading,
+      builder: (context, isLoading, child) {
+        return Container(
+          width: double.infinity,
+          height: 56, // 3.5rem
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF3b82f6), Color(0xFF1d4ed8)],
+            ),
             borderRadius: BorderRadius.circular(12), // 0.75rem
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF3b82f6).withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _isLoading ? 'Entrando...' : 'Entrar',
-              style: GoogleFonts.inter(
-                fontSize: 16, // 1rem
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+          child: ElevatedButton(
+            onPressed: isLoading ? null : _login,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12), // 0.75rem
               ),
             ),
-            if (!_isLoading) ...[
-              const SizedBox(width: 8),
-              const Text('→', style: TextStyle(fontSize: 16)),
-            ],
-          ],
-        ),
-      ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  isLoading ? 'Entrando...' : 'Entrar',
+                  style: GoogleFonts.inter(
+                    fontSize: 16, // 1rem
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                if (!isLoading) ...[
+                  const SizedBox(width: 8),
+                  const Text('→', style: TextStyle(fontSize: 16)),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
     );
   }
 
@@ -473,29 +491,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState?.validate() ?? false) {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
-
-      // Simulate login process
-      Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-
-          // For demo purposes, show success
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Login realizado com sucesso!')),
-          );
-
-          // Navigate to home
-          context.go('/home');
-        }
-      });
+      await _store.loginUser(
+        phone: _phoneController.text,
+        password: _passwordController.text,
+        context: context,
+      );
     }
   }
 }
