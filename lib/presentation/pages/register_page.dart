@@ -7,6 +7,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import '../../core/constants/colors.dart';
 import '../../core/constants/dimensions.dart';
+import '../../core/services/verification_service.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,7 +19,6 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -36,6 +36,7 @@ class _RegisterPageState extends State<RegisterPage>
 
   bool _isLoading = false;
   bool _acceptTerms = false;
+  bool _isEmailSelected = true; // Controla se email ou telefone foi selecionado
   String? _errorMessage;
 
   @override
@@ -68,7 +69,6 @@ class _RegisterPageState extends State<RegisterPage>
 
   @override
   void dispose() {
-    _nameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -294,11 +294,9 @@ class _RegisterPageState extends State<RegisterPage>
       child: Column(
         children: [
           if (_errorMessage != null) _buildErrorMessage(),
-          _buildNameField(),
+          _buildContactMethodSelector(),
           const SizedBox(height: 16), // 1rem
-          _buildPhoneField(),
-          const SizedBox(height: 16), // 1rem
-          _buildEmailField(),
+          if (_isEmailSelected) _buildEmailField() else _buildPhoneField(),
           const SizedBox(height: 16), // 1rem
           _buildPasswordField(),
           const SizedBox(height: 16), // 1rem
@@ -335,38 +333,113 @@ class _RegisterPageState extends State<RegisterPage>
     );
   }
 
-  Widget _buildNameField() {
+  Widget _buildContactMethodSelector() {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFFf9fafb),
         border: Border.all(color: const Color(0xFFe5e7eb), width: 2),
         borderRadius: BorderRadius.circular(12), // 0.75rem
       ),
-      child: TextFormField(
-        controller: _nameController,
-        style: const TextStyle(fontSize: 16), // 1rem
-        decoration: InputDecoration(
-          labelText: 'Nome completo',
-          hintText: 'Digite seu nome completo',
-          prefixIcon: const Padding(
-            padding: EdgeInsets.all(12), // 0.75rem
-            child: Text('👤', style: TextStyle(fontSize: 20)), // 1.25rem
+      child: Row(
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _isEmailSelected = true;
+                  _phoneController.clear();
+                });
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: _isEmailSelected
+                      ? const Color(0xFF3b82f6)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '✉️',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: _isEmailSelected
+                            ? Colors.white
+                            : const Color(0xFF6b7280),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Email',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: _isEmailSelected
+                            ? Colors.white
+                            : const Color(0xFF6b7280),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12, // 0.75rem
-            vertical: 12, // 0.75rem
+          const SizedBox(width: 2),
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _isEmailSelected = false;
+                  _emailController.clear();
+                });
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: !_isEmailSelected
+                      ? const Color(0xFF3b82f6)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '📱',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: !_isEmailSelected
+                            ? Colors.white
+                            : const Color(0xFF6b7280),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Telefone',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: !_isEmailSelected
+                            ? Colors.white
+                            : const Color(0xFF6b7280),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Por favor, digite seu nome completo';
-          }
-          if (value.length < 3) {
-            return 'O nome deve ter pelo menos 3 caracteres';
-          }
-          return null;
-        },
+        ],
       ),
     );
   }
@@ -674,7 +747,7 @@ class _RegisterPageState extends State<RegisterPage>
     );
   }
 
-  void _register() {
+  void _register() async {
     if (_formKey.currentState?.validate() ?? false) {
       if (!_acceptTerms) {
         setState(() {
@@ -688,22 +761,61 @@ class _RegisterPageState extends State<RegisterPage>
         _errorMessage = null;
       });
 
-      // Simulate registration process
-      Future.delayed(const Duration(seconds: 3), () {
+      try {
+        // Determina o contato e tipo
+        String contact = _isEmailSelected
+            ? _emailController.text
+            : _phoneController.text;
+        String contactType = _isEmailSelected ? 'email' : 'phone';
+
+        // Simula o envio do código de verificação
+        bool success;
+        if (_isEmailSelected) {
+          success = await VerificationService.sendVerificationCodeByEmail(
+            contact,
+          );
+        } else {
+          success = await VerificationService.sendVerificationCodeBySMS(
+            contact,
+          );
+        }
+
         if (mounted) {
           setState(() {
             _isLoading = false;
           });
 
-          // For demo purposes, show success
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Conta criada com sucesso!')),
-          );
+          if (success) {
+            // Mostra mensagem de sucesso
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Código de verificação enviado para ${_isEmailSelected ? 'seu email' : 'seu telefone'}!',
+                ),
+                backgroundColor: Colors.green,
+              ),
+            );
 
-          // Navigate to home
-          context.go('/home');
+            // Navega para a tela de verificação de código
+            context.go(
+              '/verify-code',
+              extra: {'contact': contact, 'contactType': contactType},
+            );
+          } else {
+            setState(() {
+              _errorMessage =
+                  'Erro ao enviar código de verificação. Tente novamente.';
+            });
+          }
         }
-      });
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _errorMessage = 'Erro inesperado. Tente novamente.';
+          });
+        }
+      }
     }
   }
 }

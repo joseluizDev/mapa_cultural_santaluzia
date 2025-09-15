@@ -6,6 +6,7 @@ import 'package:mapa_cultural_santaluzia/presentation/pages/talent_detail_page.d
 import '../presentation/pages/home_page.dart';
 import '../presentation/pages/login_page.dart';
 import '../presentation/pages/register_page.dart';
+import '../presentation/pages/verification_code_page.dart';
 
 /// Classe responsável pela configuração das rotas do aplicativo
 class AppRoutes {
@@ -17,6 +18,9 @@ class AppRoutes {
 
   /// Rota da página de registro
   static const String register = '/register';
+
+  /// Rota da página de verificação de código
+  static const String verifyCode = '/verify-code';
 
   /// Rota da página sobre
   static const String about = '/about';
@@ -41,6 +45,20 @@ class AppRoutes {
       GoRoute(
         path: register,
         builder: (context, state) => const RegisterPage(),
+      ),
+
+      // Rota da página de verificação de código
+      GoRoute(
+        path: verifyCode,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          final contact = extra?['contact'] ?? '';
+          final contactType = extra?['contactType'] ?? 'email';
+          return VerificationCodePage(
+            contact: contact,
+            contactType: contactType,
+          );
+        },
       ),
 
       // Rota da página sobre
